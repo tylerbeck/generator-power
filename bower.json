@@ -1,0 +1,16 @@
+{
+  "name": "project-name",
+  "version": "0.0.1",
+  "dependencies": {
+    "html5shiv": "latest",
+    "lodash": "latest",
+    "normalize-css": "latest",
+    "q": "latest",
+    "requirejs": "latest"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ]
+}

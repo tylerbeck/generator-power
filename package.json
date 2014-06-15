@@ -1,0 +1,34 @@
+{
+  "name": "project-name",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "bower": "latest",
+    "grunt": "latest",
+    "grunt-autoprefixer": "latest",
+    "grunt-bower-task": "latest",
+    "grunt-cli": "latest",
+    "grunt-combine-media-queries": "latest",
+    "grunt-contrib-clean": "latest",
+    "grunt-contrib-copy": "latest",
+    "grunt-contrib-imagemin": "latest",
+    "grunt-contrib-less": "latest",
+    "grunt-contrib-requirejs": "latest",
+    "grunt-contrib-uglify": "latest",
+    "grunt-contrib-watch": "latest",
+    "grunt-csso": "latest",
+    "grunt-newer": "latest",
+    "grunt-notify": "latest",
+    "grunt-sketch": "latest",
+    "grunt-start": "git://github.com/tylerbeck/grunt-start",
+    "grunt-string-replace": "latest",
+    "grunt-webfont": "latest",
+    "lodash": "latest",
+    "matchdep": "latest",
+    "q": "latest"
+  },
+  "scripts": {
+    "install": ""
+  }
+}

@@ -1,0 +1,25 @@
+### IDE files
+*.iml
+.idea
+
+### generated files
+/dist
+/cache
+/tmp
+*.min.js
+/webroot/assets/css/main.css
+/webroot/assets/css/main.min.css
+#intentionally including icon-font related files
+#intentionally including optimized images
+
+### managed directories
+node_modules
+bower_components
+npm-debug.log
+
+### package manager copied assets
+/webroot/assets/*/lib/
+/assets/*/lib/
+
+
+
