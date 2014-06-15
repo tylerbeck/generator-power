@@ -19,7 +19,7 @@ module.exports ={
                 overwrite: true
             },
             src: 'assets/design.sketch',
-            dest: 'assets/img/'
+            dest: 'assets/img-sketch/'
         }
     },
 
@@ -32,12 +32,20 @@ module.exports ={
             options:{
                 optimizationLevel: 7
             },
-            files:[{
-                expand: true,
-                cwd: 'assets/img/',
-                src: ['**/*.{png,jpg,gif,svg}','!**/icon-*.svg'],
-                dest: 'webroot/assets/img/'
-            }]
+            files:[
+                {
+                    expand: true,
+                    cwd: 'assets/img/',
+                    src: ['**/*.{png,jpg,gif,svg}'],
+                    dest: 'webroot/assets/img/'
+                },
+                {
+                    expand: true,
+                    cwd: 'assets/img-sketch/',
+                    src: ['**/*.{png,jpg,gif,svg}'],
+                    dest: 'webroot/assets/img/'
+                }
+            ]
         }
     },
 
@@ -48,7 +56,10 @@ module.exports ={
      */
     webfont:{
         icons: {
-            src: 'assets/img/**/icon-*.svg',
+            src: [
+                'assets/icons/*.svg',
+                'assets/icons-sketch/*.svg'
+            ],
             dest: 'webroot/assets/fonts/',
             destCss: 'assets/less/',
             options: {
@@ -76,18 +87,35 @@ module.exports ={
             }
         },
         images:{
-            files: ['assets/img/**/*.{png,jpg,gif,svg}','!assets/img/**/icon-*.svg'],
+            files: [
+                'assets/img/**/*.{png,jpg,gif,svg}',
+                'assets/img-sketch/**/*.{png,jpg,gif,svg}',
+                '!assets/img-sketch/**/icon-*.svg'
+            ],
             tasks: ['build-images'],
             options: {
                 nospawn: false
             }
         },
         icons:{
-            files: ['assets/img/**/icon-*.svg'],
+            files: [
+                'assets/icons/*.svg',
+                'assets/icons-sketch/*.svg'
+            ],
             tasks: ['build-icon-font'],
             options: {
                 nospawn: true
             }
+        }
+    },
+
+    copy:{
+        'sketch-icons': {
+            files: grunt.file.expandMapping(['assets/img-sketch/**/icon-*.svg'], '', {
+                rename: function( destBase, destPath ) {
+                    return destBase+destPath.replace('icon-', '').replace('/img-sketch/', '/icons-sketch/');
+                }
+            } )
         }
     },
 
@@ -102,6 +130,15 @@ module.exports ={
                 return destBase+destPath.replace('assets/img/', 'webroot/assets/img/');
             }
         } ).map( function( item ){ return item.dest; }),
+
+        'tmp-icon-svgs': [
+            'assets/img-sketch/icon-*.svg'
+        ],
+
+        'sketch': [
+            'assets/icons-sketch/**/*.svg',
+            'assets/img-sketch/**/*'
+        ],
 
         icons: [
             'assets/less/icon-font.less',

@@ -49,7 +49,11 @@ module.exports = function( grunt ){
      * exports slices from design.sketch
      */
     grunt.registerTask( 'sketch-export', [
+        'clean:sketch',
         'sketch_export:design',
+        'update-config',
+        'copy:sketch-icons',
+        'clean:tmp-icon-svgs',
         'notify:sketch'
     ]);
 

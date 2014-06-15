@@ -38,8 +38,15 @@ module.exports = function( grunt ){
                             return destBase+destPath.replace('.min','');
                         }
                     } )
-                }
+                },
 
+                'sketch-icons': {
+                    files: grunt.file.expandMapping(['assets/img-sketch/**/icon-*.svg'], '', {
+                        rename: function( destBase, destPath ) {
+                            return destBase+destPath.replace('icon-', '').replace('/img-sketch/', '/icons-sketch/');
+                        }
+                    } )
+                }
             },
             uglify:{
                 js: {
@@ -59,8 +66,6 @@ module.exports = function( grunt ){
                 } ).map( function( item ){ return item.dest; })
 
             }
-
-
         };
 
         grunt.config.merge( updated );
