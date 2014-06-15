@@ -10,7 +10,6 @@ define([], function(){
          * on dom ready handler
          */
         var onReady = function(){
-            console.log('dom ready');
             //remove listeners
             if ( document.addEventListener ) {
                 document.removeEventListener( "DOMContentLoaded", onReady, false );
