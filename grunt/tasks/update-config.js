@@ -41,9 +41,9 @@ module.exports = function( grunt ){
                 },
 
                 'sketch-icons': {
-                    files: grunt.file.expandMapping(['assets/img-sketch/**/icon-*.svg'], '', {
+                    files: grunt.file.expandMapping(['assets/sketch/img/**/icon-*.svg'], '', {
                         rename: function( destBase, destPath ) {
-                            return destBase+destPath.replace('icon-', '').replace('/img-sketch/', '/icons-sketch/');
+                            return destBase+destPath.replace('icon-', '').replace('/img/', '/icon-svg/');
                         }
                     } )
                 }
@@ -59,11 +59,12 @@ module.exports = function( grunt ){
             },
             clean:{
                 //only remove images that have an original in assets/img
-                img: grunt.file.expandMapping(['assets/img/**/*.{png,jpg,gif}'], '', {
+                img: grunt.file.expandMapping(['assets/img/**/*.{png,jpg,gif,svg}','assets/sketch/img/**/*.{png,jpg,gif,svg}'], '', {
                     rename: function( destBase, destPath ) {
-                        return destBase+destPath.replace('assets/img/', 'webroot/assets/img/');
+                        return destBase+destPath.replace('assets/img/', 'webroot/assets/img/' )
+                            .replace('assets/sketch/img/', 'webroot/assets/img/');
                     }
-                } ).map( function( item ){ return item.dest; })
+                } ).map( function( item ){ return item.dest; }),
 
             }
         };

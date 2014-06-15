@@ -18,8 +18,8 @@ module.exports ={
                 type: 'slices',
                 overwrite: true
             },
-            src: 'assets/design.sketch',
-            dest: 'assets/img-sketch/'
+            src: 'assets/sketch/design.sketch',
+            dest: 'assets/sketch/img/'
         }
     },
 
@@ -41,7 +41,7 @@ module.exports ={
                 },
                 {
                     expand: true,
-                    cwd: 'assets/img-sketch/',
+                    cwd: 'assets/sketch/img/',
                     src: ['**/*.{png,jpg,gif,svg}'],
                     dest: 'webroot/assets/img/'
                 }
@@ -57,8 +57,8 @@ module.exports ={
     webfont:{
         icons: {
             src: [
-                'assets/icons/*.svg',
-                'assets/icons-sketch/*.svg'
+                'assets/icon-svg/*.svg',
+                'assets/sketch/icon-svg/*.svg'
             ],
             dest: 'webroot/assets/fonts/',
             destCss: 'assets/less/',
@@ -80,7 +80,7 @@ module.exports ={
      */
     watch:{
         sketch:{
-            files: ['assets/design.sketch'],
+            files: ['assets/sketch/design.sketch'],
             tasks: ['sketch-export'],
             options: {
                 nospawn: false
@@ -89,8 +89,8 @@ module.exports ={
         images:{
             files: [
                 'assets/img/**/*.{png,jpg,gif,svg}',
-                'assets/img-sketch/**/*.{png,jpg,gif,svg}',
-                '!assets/img-sketch/**/icon-*.svg'
+                'assets/sketch/img/**/*.{png,jpg,gif,svg}',
+                '!assets/sketch/img/**/icon-*.svg'
             ],
             tasks: ['build-images'],
             options: {
@@ -99,8 +99,8 @@ module.exports ={
         },
         icons:{
             files: [
-                'assets/icons/*.svg',
-                'assets/icons-sketch/*.svg'
+                'assets/icon-svg/*.svg',
+                'assets/sketch/icon-svg/*.svg'
             ],
             tasks: ['build-icon-font'],
             options: {
@@ -111,9 +111,9 @@ module.exports ={
 
     copy:{
         'sketch-icons': {
-            files: grunt.file.expandMapping(['assets/img-sketch/**/icon-*.svg'], '', {
+            files: grunt.file.expandMapping(['assets/sketch/img/**/icon-*.svg'], '', {
                 rename: function( destBase, destPath ) {
-                    return destBase+destPath.replace('icon-', '').replace('/img-sketch/', '/icons-sketch/');
+                    return destBase+destPath.replace('icon-', '').replace('/img/', '/icon-svg/');
                 }
             } )
         }
@@ -125,19 +125,20 @@ module.exports ={
      */
     clean:{
         //only remove images that have an original in assets/img
-        img: grunt.file.expandMapping(['assets/img/**/*.{png,jpg,gif}'], '', {
+        img: grunt.file.expandMapping(['assets/img/**/*.{png,jpg,gif,svg}','assets/sketch/img/**/*.{png,jpg,gif,svg}'], '', {
             rename: function( destBase, destPath ) {
-                return destBase+destPath.replace('assets/img/', 'webroot/assets/img/');
+                return destBase+destPath.replace('assets/img/', 'webroot/assets/img/' )
+                                        .replace('assets/sketch/img/', 'webroot/assets/img/');
             }
         } ).map( function( item ){ return item.dest; }),
 
-        'tmp-icon-svgs': [
-            'assets/img-sketch/icon-*.svg'
+        'tmp-icon-svg': [
+            'assets/sketch/img/**/icon-*.svg'
         ],
 
         'sketch': [
-            'assets/icons-sketch/**/*.svg',
-            'assets/img-sketch/**/*'
+            'assets/sketch/img',
+            'assets/sketch/icon-svg'
         ],
 
         icons: [

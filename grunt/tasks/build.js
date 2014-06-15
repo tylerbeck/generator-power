@@ -53,7 +53,7 @@ module.exports = function( grunt ){
         'sketch_export:design',
         'update-config',
         'copy:sketch-icons',
-        'clean:tmp-icon-svgs',
+        'clean:tmp-icon-svg',
         'notify:sketch'
     ]);
 
