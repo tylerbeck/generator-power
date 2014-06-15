@@ -9,6 +9,8 @@
 *.min.js
 /webroot/assets/css/main.css
 /webroot/assets/css/main.min.css
+/assets/sketch/img
+/assets/sketch/icon-svg
 #intentionally including icon-font related files
 #intentionally including optimized images
 
