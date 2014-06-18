@@ -29,6 +29,6 @@
     "q": "latest"
   },
   "scripts": {
-    "install": ""
+    "install": "grunt setup"
   }
 }
