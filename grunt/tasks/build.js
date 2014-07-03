@@ -28,6 +28,7 @@ module.exports = function( grunt ){
     grunt.registerTask( 'setup', [
         'bower-install',
         'bower-copy',
+        'mkdir:images',
         'sketch-export',
         'build-images',
         'build-icon-font',

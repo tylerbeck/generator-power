@@ -7,6 +7,21 @@ var grunt = require('grunt');
  * configuration
  */
 module.exports ={
+
+    /**
+     * make sure watch folders exist
+     */
+    mkdir:{
+      images: {
+          create: [
+              'assets/sketch/img',
+              'assets/sketch/icon-svg',
+              'assets/img',
+              'assets/icon-svg'
+          ]
+      }
+    },
+
     /**
      * configuration for sketch task
      * sketchtool must be installed for this task to work properly
