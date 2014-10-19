@@ -18,8 +18,8 @@ module.exports ={
                 type: 'slices',
                 overwrite: true
             },
-            src: 'assets/sketch/design.sketch',
-            dest: 'assets/sketch/img/'
+            src: 'source/sketch/design.sketch',
+            dest: 'source/sketch/img/'
         }
     },
 
@@ -35,13 +35,13 @@ module.exports ={
             files:[
                 {
                     expand: true,
-                    cwd: 'assets/img/',
+                    cwd: 'source/img/',
                     src: ['**/*.{png,jpg,gif,svg}'],
                     dest: 'webroot/assets/img/'
                 },
                 {
                     expand: true,
-                    cwd: 'assets/sketch/img/',
+                    cwd: 'source/sketch/img/',
                     src: ['**/*.{png,jpg,gif,svg}'],
                     dest: 'webroot/assets/img/'
                 }
@@ -57,11 +57,11 @@ module.exports ={
     webfont:{
         icons: {
             src: [
-                'assets/icon-svg/*.svg',
-                'assets/sketch/icon-svg/*.svg'
+                'source/icon-svg/*.svg',
+                'source/sketch/icon-svg/*.svg'
             ],
             dest: 'webroot/assets/fonts/',
-            destCss: 'assets/less/',
+            destCss: 'source/less/',
             options: {
                 stylesheet: 'less',
                 font: 'icon-font',
@@ -80,7 +80,7 @@ module.exports ={
      */
     watch:{
         sketch:{
-            files: ['assets/sketch/design.sketch'],
+            files: ['source/sketch/design.sketch'],
             tasks: ['sketch-export'],
             options: {
                 nospawn: false
@@ -88,9 +88,9 @@ module.exports ={
         },
         images:{
             files: [
-                'assets/img/**/*.{png,jpg,gif,svg}',
-                'assets/sketch/img/**/*.{png,jpg,gif,svg}',
-                '!assets/sketch/img/**/icon-*.svg'
+                'source/img/**/*.{png,jpg,gif,svg}',
+                'source/sketch/img/**/*.{png,jpg,gif,svg}',
+                '!source/sketch/img/**/icon-*.svg'
             ],
             tasks: ['build-images'],
             options: {
@@ -99,8 +99,8 @@ module.exports ={
         },
         icons:{
             files: [
-                'assets/icon-svg/*.svg',
-                'assets/sketch/icon-svg/*.svg'
+                'source/icon-svg/*.svg',
+                'source/sketch/icon-svg/*.svg'
             ],
             tasks: ['build-icon-font'],
             options: {
@@ -111,7 +111,7 @@ module.exports ={
 
     copy:{
         'sketch-icons': {
-            files: grunt.file.expandMapping(['assets/sketch/img/**/icon-*.svg'], '', {
+            files: grunt.file.expandMapping(['source/sketch/img/**/icon-*.svg'], '', {
                 rename: function( destBase, destPath ) {
                     return destBase+destPath.replace('icon-', '').replace('/img/', '/icon-svg/');
                 }
@@ -125,24 +125,24 @@ module.exports ={
      */
     clean:{
         //only remove images that have an original in assets/img
-        img: grunt.file.expandMapping(['assets/img/**/*.{png,jpg,gif,svg}','assets/sketch/img/**/*.{png,jpg,gif,svg}'], '', {
+        img: grunt.file.expandMapping(['source/img/**/*.{png,jpg,gif,svg}','source/sketch/img/**/*.{png,jpg,gif,svg}'], '', {
             rename: function( destBase, destPath ) {
-                return destBase+destPath.replace('assets/img/', 'webroot/assets/img/' )
-                                        .replace('assets/sketch/img/', 'webroot/assets/img/');
+                return destBase+destPath.replace('source/img/', 'webroot/assets/img/' )
+                                        .replace('source/sketch/img/', 'webroot/assets/img/');
             }
         } ).map( function( item ){ return item.dest; }),
 
         'tmp-icon-svg': [
-            'assets/sketch/img/**/icon-*.svg'
+            'source/sketch/img/**/icon-*.svg'
         ],
 
         'sketch': [
-            'assets/sketch/img',
-            'assets/sketch/icon-svg'
+            'source/sketch/img',
+            'source/sketch/icon-svg'
         ],
 
         icons: [
-            'assets/less/icon-font.less',
+            'source/less/icon-font.less',
             'webroot/assets/fonts/icon-font.*'
         ]
     },

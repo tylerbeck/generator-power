@@ -17,7 +17,7 @@ module.exports = {
                 strictImports: true
             },
             files: {
-                'webroot/assets/css/main.css' :'assets/less/main.less'
+                'webroot/assets/css/main.css' :'source/less/main.less'
             }
         }
     },
@@ -73,7 +73,7 @@ module.exports = {
      */
     watch:{
         less:{
-            files: ['assets/less/**/*.less'],
+            files: ['source/less/**/*.less'],
             tasks: ['build-css'],
             options: {
                 nospawn: true

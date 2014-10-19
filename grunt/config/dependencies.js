@@ -47,7 +47,7 @@ module.exports = {
              * }
              */
             map: {
-                'normalize-css/normalize.css': '../../../../assets/less/lib/normalize.less',
+                'normalize-css/normalize.css': '../../../../source/less/lib/normalize.less',
                 'html5shiv/dist': '/',
                 'lodash/dist/lodash.compat.js': 'lodash.js',
                 q: '/',
@@ -67,7 +67,7 @@ module.exports = {
          */
         'bower-copy': [
             'webroot/assets/js/lib/*',
-            'assets/less/lib/*'
+            'source/less/lib/*'
         ],
         /**
          * removes dependencies installed via bower

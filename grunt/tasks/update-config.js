@@ -41,7 +41,7 @@ module.exports = function( grunt ){
                 },
 
                 'sketch-icons': {
-                    files: grunt.file.expandMapping(['assets/sketch/img/**/icon-*.svg'], '', {
+                    files: grunt.file.expandMapping(['source/sketch/img/**/icon-*.svg'], '', {
                         rename: function( destBase, destPath ) {
                             return destBase+destPath.replace('icon-', '').replace('/img/', '/icon-svg/');
                         }
@@ -59,10 +59,10 @@ module.exports = function( grunt ){
             },
             clean:{
                 //only remove images that have an original in assets/img
-                img: grunt.file.expandMapping(['assets/img/**/*.{png,jpg,gif,svg}','assets/sketch/img/**/*.{png,jpg,gif,svg}'], '', {
+                img: grunt.file.expandMapping(['source/img/**/*.{png,jpg,gif,svg}','source/sketch/img/**/*.{png,jpg,gif,svg}'], '', {
                     rename: function( destBase, destPath ) {
-                        return destBase+destPath.replace('assets/img/', 'webroot/assets/img/' )
-                            .replace('assets/sketch/img/', 'webroot/assets/img/');
+                        return destBase+destPath.replace('source/img/', 'webroot/assets/img/' )
+                            .replace('source/sketch/img/', 'webroot/assets/img/');
                     }
                 } ).map( function( item ){ return item.dest; }),
 

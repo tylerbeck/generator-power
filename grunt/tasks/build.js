@@ -28,9 +28,11 @@ module.exports = function( grunt ){
     grunt.registerTask( 'setup', [
         'bower-install',
         'bower-copy',
+        'mkdir:images',
         'sketch-export',
         'build-images',
         'build-icon-font',
+        'build-fonts',
         'build-css'
     ]);
 
@@ -64,6 +66,16 @@ module.exports = function( grunt ){
     grunt.registerTask( 'build-images', [
         'newer:imagemin:all',
         'notify:images'
+    ]);
+
+    /**
+     * build-fonts
+     * builds web-embeddable fonts and less
+     */
+    grunt.registerTask( 'build-fonts', [
+        'clean:embedfont-fonts',
+        'embedfont',
+        'notify:embedfont'
     ]);
 
     /**
@@ -115,6 +127,7 @@ module.exports = function( grunt ){
     grunt.registerTask( 'build-dist', [
         'build-images',
         'build-icon-font',
+        'build-fonts',
         'build-css',
         'build-js',
         'requirejs:main',
