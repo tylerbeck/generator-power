@@ -4,26 +4,18 @@
  * License: MIT
  ***********************************************************************/
 
-var gs = require('grunt-start');
+var GruntStartup = require('grunt-startup');
 
-var configDirs = [
-	"./grunt/config"
-];
-
-var taskDirs = [
-	"./grunt/tasks"
-];
-
-module.exports = new gs.Loader(
+module.exports = new GruntStartup(
 
 		//load npm tasks
 		true,
 
 		//array of or single directory path in which grunt tasks have been defined
-		taskDirs,
+        "./grunt/tasks",
 
 		//array of or single directory path in which grunt configuration objects have been defined
-		configDirs,
+        "./grunt/config",
 
 		//grunt file scripts
 		function( grunt ){

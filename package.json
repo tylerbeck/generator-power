@@ -7,7 +7,8 @@
     "bower": "latest",
     "grunt": "latest",
     "grunt-autoprefixer": "latest",
-    "grunt-bower-task": "latest",
+    "grunt-bower-install-simple": "^1.0.3",
+    "grunt-bower-map": "^0.1.0",
     "grunt-cli": "latest",
     "grunt-combine-media-queries": "latest",
     "grunt-contrib-clean": "latest",
@@ -22,14 +23,11 @@
     "grunt-newer": "latest",
     "grunt-notify": "latest",
     "grunt-sketch": "latest",
-    "grunt-start": "git://github.com/tylerbeck/grunt-start",
+    "grunt-startup": "latest",
     "grunt-string-replace": "latest",
     "grunt-webfont": "latest",
     "lodash": "latest",
-    "matchdep": "latest",
     "q": "latest"
   },
-  "scripts": {
-    "install": "grunt setup"
-  }
+  "scripts": {}
 }

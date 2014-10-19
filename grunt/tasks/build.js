@@ -41,8 +41,8 @@ module.exports = function( grunt ){
      * installs bower dependencies and executes bower-copy task
      */
     grunt.registerTask( 'bower-install', [
-        'bower:install',
-        'bower-copy',
+        'bower-install-simple',
+        'bower-map',
         'notify:bower'
     ]);
 

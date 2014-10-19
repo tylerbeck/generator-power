@@ -6,27 +6,23 @@ module.exports = {
      * configuration for bower installation task,
      * instead of using built in copy, rely on bower-copy instead
      */
-    bower: {
-        install: {
-            options: {
-                cleanBowerDir: false,
-                copy: false
-            }
+    'bower-install-simple': {
+        options: {
+            color: true,
+            directory: "bower_components"
+        },
+        default: {
+
         }
     },
 
     /**
-     * configuration for bower-copy task
+     * configuration for bower-map task
      * copies files that have main files specified bower.json
      * and files added manually via the 'shim' attribute
      */
-    'bower-copy': {
-        default: {
-            /**
-             * default path into which bower assets are copied
-             */
-            libPath: './webroot/assets/js/lib',
-
+    'bower-map': {
+        options: {
             /**
              * shims packages that do not have a bower.json file
              * or can be used to change the included files for a package
@@ -34,24 +30,22 @@ module.exports = {
              */
             shim: {
                 q: 'q.js'
-            },
+            }
 
-            /**
-             * map values are used to put component files in a location other than the default libPath
-             * allowable values
-             * <file-path>: <new-file-path>
-             * <directory>: <new-directory>
-             * <component>:{
-             *      <relative-file-path>: <new-file-path>
-             *      <relative-directory>: <new-directory>
-             * }
-             */
-            map: {
-                'normalize-css/normalize.css': '../../../../source/less/lib/normalize.less',
-                'html5shiv/dist': '/',
-                'lodash/dist/lodash.compat.js': 'lodash.js',
-                q: '/',
-                requirejs: '/'
+        },
+        js: {
+            options: {
+                dest: './webroot/assets/js/lib',
+                extensions: ['js']
+            }
+        },
+        css: {
+            options: {
+                dest: './source/less/lib',
+                extensions: ['css'],
+                map: {
+                    'normalize-css/normalize.css': 'normalize.less'
+                }
             }
         }
     },
@@ -65,7 +59,7 @@ module.exports = {
          * add any non-standard mapped files here
          * <file-path-glob>
          */
-        'bower-copy': [
+        'bower-map': [
             'webroot/assets/js/lib/*',
             'source/less/lib/*'
         ],

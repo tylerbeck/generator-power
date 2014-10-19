@@ -21,7 +21,7 @@ npm-debug.log
 
 ### package manager copied assets
 /webroot/assets/*/lib/
-/assets/*/lib/
+/source/*/lib/
 
 
 
