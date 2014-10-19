@@ -29,7 +29,7 @@ module.exports = new gs.Loader(
 		function( grunt ){
 
 			//default task definition
-			grunt.registerTask( 'default', ['watch'] );
+			grunt.registerTask( 'default', ['mkdir','watch'] );
 
 		}
 );

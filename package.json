@@ -18,6 +18,7 @@
     "grunt-contrib-uglify": "latest",
     "grunt-contrib-watch": "latest",
     "grunt-csso": "latest",
+    "grunt-mkdir": "latest",
     "grunt-newer": "latest",
     "grunt-notify": "latest",
     "grunt-sketch": "latest",
