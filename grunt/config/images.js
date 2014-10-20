@@ -13,12 +13,14 @@ module.exports ={
      */
     mkdir:{
       images: {
-          create: [
-              'assets/sketch/img',
-              'assets/sketch/icon-svg',
-              'assets/img',
-              'assets/icon-svg'
-          ]
+          options:{
+              create: [
+                  'source/sketch/img',
+                  'source/sketch/icon-svg',
+                  'source/img',
+                  'source/icon-svg'
+              ]
+          }
       }
     },
 
