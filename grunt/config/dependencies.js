@@ -4,7 +4,6 @@
 module.exports = {
     /**
      * configuration for bower installation task,
-     * instead of using built in copy, rely on bower-copy instead
      */
     'bower-install-simple': {
         options: {
