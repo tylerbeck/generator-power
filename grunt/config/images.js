@@ -78,7 +78,7 @@ module.exports ={
                 'source/sketch/icon-svg/*.svg'
             ],
             dest: 'webroot/assets/fonts/',
-            destCss: 'source/less/',
+            destCss: 'source/less/fonts/',
             options: {
                 stylesheet: 'less',
                 font: 'icon-font',
@@ -159,7 +159,7 @@ module.exports ={
         ],
 
         icons: [
-            'source/less/icon-font.less',
+            'source/less/fonts/icon-font.less',
             'webroot/assets/fonts/icon-font.*'
         ]
     },

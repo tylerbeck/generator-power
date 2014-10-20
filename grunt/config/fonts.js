@@ -30,14 +30,6 @@ module.exports = {
                         '600': 'source/fonts/OpenSans/OpenSans-SemiBoldItalic.ttf',
                         '700': 'source/fonts/OpenSans/OpenSans-BoldItalic.ttf'
                     }
-                },
-                Fanwood: {
-                    normal: {
-                        '400': 'source/fonts/Fanwood/Fanwood.otf'
-                    },
-                    italic: {
-                        '400': 'source/fonts/Fanwood/Fanwood-Italic.otf'
-                    }
                 }
             }
         }
