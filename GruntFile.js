@@ -6,23 +6,18 @@
 
 var GruntStartup = require('grunt-startup');
 
-module.exports = new GruntStartup(
+module.exports = new GruntStartup( {
 
-		//load npm tasks
-		true,
+    loadTasks: true,
 
-		//array of or single directory path in which grunt tasks have been defined
-        "./grunt/tasks",
-
-		//array of or single directory path in which grunt configuration objects have been defined
-        "./grunt/config",
-
-		//grunt file scripts
-		function( grunt ){
-
-			//default task definition
-			grunt.registerTask( 'default', ['mkdir','watch'] );
-
-		}
-);
-
+    ignoreTasks: [
+        'grunt-sketch'
+    ],
+    taskPaths: [
+        'automation/grunt/tasks/'
+    ],
+    configPaths: [
+        './default-settings.json',
+        './local-settings.json',
+        'automation/grunt/configuration/']
+} );

@@ -1,0 +1,35 @@
+{
+    "settings": {
+        "environment": "dev",
+        "styleLang": "less",
+        "vendorPath": "vendor",
+
+        "css":{
+            "images": "../images",
+            "fonts": "..fonts",
+            "files": [
+                "main"
+            ]
+        },
+
+        "build": {
+            "root": "public",
+            "scripts": "public/assets/scripts",
+            "css": "public/assets/css",
+            "fonts": "public/assets/fonts",
+            "images": "public/assets/images"
+        },
+
+        "resources": {
+            "fonts": "resource/fonts",
+            "images": "resource/images"
+        },
+
+        "source": {
+            "root": "source",
+            "scripts": "source/scripts",
+            "less": "source/less",
+            "sass": "source/sass"
+        }
+    }
+}

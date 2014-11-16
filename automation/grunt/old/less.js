@@ -23,20 +23,6 @@ module.exports = {
     },
 
     /**
-     * prefixer configuration
-     * automatically adds prefixes based on the specified browsers
-     * additional information can be found at: https://github.com/ai/autoprefixer#browsers
-     */
-    autoprefixer: {
-        options: {
-            browsers: ['ie > 7', 'Firefox > 3.5', 'chrome > 9', 'safari > 5']
-        },
-        main: {
-            src: 'webroot/assets/css/main.css'
-        }
-    },
-
-    /**
      * configuration for the combine-media-queries task
      * media queries are combined and placed at the bottom of the css file
      * using a mobile first sorting methodology
