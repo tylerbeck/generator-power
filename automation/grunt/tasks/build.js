@@ -6,6 +6,7 @@ module.exports = function( grunt ) {
         'setup',
         'build-images',
         'build-fonts',
-        'build-css'
+        'build-css',
+        'build-scripts'
     ] );
 };

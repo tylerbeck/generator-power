@@ -1,5 +1,3 @@
-
-var path = require('path');
 /**
  * font configuration
  * fonts should be configured in *-settings.json
@@ -94,7 +92,7 @@ module.exports = {
 
 
     /**
-     * conditionally run sketch & minification tasks based on local environment
+     * conditionally run set-font-engine based on local environment
      */
      //TODO: update task once embedfont supports engine specification
     if: {

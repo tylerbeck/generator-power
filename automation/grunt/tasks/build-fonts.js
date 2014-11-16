@@ -5,7 +5,7 @@ module.exports = function( grunt ) {
     grunt.registerTask( 'build-fonts', [
         'if:fontforge',
         'webfont:icons',
-        'embedfont:default',
+        'embedfont',
         'notify:fonts'
     ] );
 };
