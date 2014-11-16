@@ -29,17 +29,28 @@ module.exports = {
      * list of fonts can be updated in *-settings.json
      */
     embedfont: {
-        default: {
-            options:{
-                fontPath: '<%= settings.build.fonts %>',
-                stylePath: '<%= settings.source.'+settings.styleLang+' %>/fonts',
-                relPath: '<%= settings.css.fonts %>',
-                reformatNames: false,
-                output: '<%= settings.styleLang %>',
-                engine: '<%= settings.fonts.engine %>'
 
-            },
+        options:{
+            fontPath: '<%= settings.build.fonts %>',
+            stylePath: '<%= settings.source.'+settings.styleLang+' %>/fonts',
+            relPath: '<%= settings.css.fonts %>',
+            reformatNames: false,
+            output: '<%= settings.styleLang %>',
+            engine: '<%= settings.fonts.engine %>'
+        },
+
+        default: {
             fonts: fonts
+        },
+
+        icon: {
+            fonts: {
+                '<%= settings.fonts.iconFontName %>':{
+                    "normal":{
+                        "400": "<%= settings.fonts.iconFontName %>/<%= settings.fonts.iconFontName %>.ttf"
+                    }
+                }
+            }
         }
     },
 
@@ -107,15 +118,27 @@ module.exports = {
     watch: {
 
         /**
-         * when
+         * when font sources are updated regenerate embeddable fonts
          */
         fonts: {
-            files: [ '<%= settings.resources.sketch %>/design.sketch' ],
-            tasks: [ 'if:sketch' ],
+            files: [ '<%= settings.resources.fonts %>/**/*' ],
+            tasks: [ 'if:fontforge', 'embedfont', 'notify:fonts' ],
+            options: {
+                spawn: true
+            }
+        },
+
+        /**
+         * when font sources are updated regenerate embeddable fonts
+         */
+        icons: {
+            files: [ '<%= settings.resources.icons %>/**/*.svg' ],
+            tasks: [ 'if:fontforge', 'webfont', 'notify:icons' ],
             options: {
                 spawn: true
             }
         }
+
     },
 
     /**
@@ -126,6 +149,12 @@ module.exports = {
             options: {
                 title: 'Grunt Task Complete',
                 message: 'Fonts & font styles exported.'
+            }
+        },
+        icons: {
+            options: {
+                title: 'Grunt Task Complete',
+                message: 'Icon Fonts & icon styles exported.'
             }
         }
     }

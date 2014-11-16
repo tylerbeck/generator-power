@@ -20,11 +20,6 @@
             "engine": "fontforge",
             "iconFontName": "IconFont",
             "families":{
-                "IconFont":{
-                    "normal":{
-                        "400": "IconFont/IconFont.ttf"
-                    }
-                },
                 "OpenSans": {
                     "normal": {
                         "200": "OpenSans/OpenSans-Light.ttf",
