@@ -28,6 +28,10 @@ module.exports ={
      * configuration for sketch task
      * sketchtool must be installed for this task to work properly
      * http://bohemiancoding.com/sketch/tool/
+     *
+     * to prevent errors on systems without sketchtool, this
+     * plugin's loading is deferred using 'if'.  To execute a
+     * sketch export use: "sketch-export:
      */
     sketch_export:{
         design:{

@@ -6,10 +6,40 @@
 
         "css":{
             "images": "../images",
-            "fonts": "..fonts",
+            "fonts": "../fonts",
             "files": [
                 "main"
             ]
+        },
+
+        "images":{
+            "types": "png,jpg,jpeg,gif,svg"
+        },
+
+        "fonts": {
+            "engine": "fontforge",
+            "iconFontName": "IconFont",
+            "families":{
+                "IconFont":{
+                    "normal":{
+                        "400": "IconFont/IconFont.ttf"
+                    }
+                },
+                "OpenSans": {
+                    "normal": {
+                        "200": "OpenSans/OpenSans-Light.ttf",
+                        "400": "OpenSans/OpenSans-Regular.ttf",
+                        "600": "OpenSans/OpenSans-SemiBold.ttf",
+                        "700": "OpenSans/OpenSans-Bold.ttf"
+                    },
+                    "italic": {
+                        "200": "OpenSans/OpenSans-LightItalic.ttf",
+                        "400": "OpenSans/OpenSans-Italic.ttf",
+                        "600": "OpenSans/OpenSans-SemiBoldItalic.ttf",
+                        "700": "OpenSans/OpenSans-BoldItalic.ttf"
+                    }
+                }
+            }
         },
 
         "build": {
@@ -21,8 +51,11 @@
         },
 
         "resources": {
-            "fonts": "resource/fonts",
-            "images": "resource/images"
+            "root": "resources",
+            "fonts": "resources/fonts",
+            "images": "resources/images",
+            "icons": "resources/icons",
+            "sketch": "resources/sketch"
         },
 
         "source": {

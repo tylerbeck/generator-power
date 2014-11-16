@@ -104,6 +104,7 @@ module.exports = {
         /**
          * clean css from build directory
          */
+        //TODO: update this task, or create custom task to only remove styles that are in compiled
         'css': [
             '<%= settings.build.css %>/*'
         ]
@@ -147,7 +148,7 @@ module.exports = {
     },
 
     /**
-     * when bower.json file changes clean and re-map vendor files
+     * when style files change re-build css
      */
     watch: {
         style:{

@@ -20,7 +20,7 @@
     "grunt-contrib-uglify": "^0.6.0",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-embedfont": "^0.1.1",
-    "grunt-if": "^0.1.2",
+    "grunt-if": "^0.1.3",
     "grunt-mkdir": "^0.1.2",
     "grunt-newer": "^0.8.0",
     "grunt-notify": "^0.4.1",
@@ -28,6 +28,9 @@
     "grunt-startup": "^0.1.2",
     "grunt-string-replace": "^1.0.0",
     "grunt-webfont": "^0.4.8",
+    "imagemin-mozjpeg": "^4.0.0",
+    "imagemin-pngquant": "^4.0.0",
+    "imagemin-zopfli": "^4.0.0",
     "lodash": "^2.4.1",
     "q": "^1.1.1"
   },
