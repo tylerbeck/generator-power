@@ -36,7 +36,7 @@ module.exports = {
         },
         js: {
             options: {
-                dest: '<%= settings.build.scripts %>/<%= settings.vendorPath %>',
+                dest: '<%= settings.source.scripts %>/<%= settings.vendorPath %>',
                 extensions: ['js']
             }
         },
@@ -72,8 +72,7 @@ module.exports = {
         'bower-map': [
             '<%= settings.source.less %>/<%= settings.vendorPath %>/*',
             '<%= settings.source.sass %>/<%= settings.vendorPath %>/*',
-            '<%= settings.build.css %>/<%= settings.vendorPath %>/*',
-            '<%= settings.build.scripts %>/<%= settings.vendorPath %>/*'
+            '<%= settings.source.scripts %>/<%= settings.vendorPath %>/*'
         ],
         /**
          * cleans bower_components folder

@@ -37,12 +37,27 @@
             }
         },
 
+        "scripts": {
+            "copy": ["**/*.js"],
+            "concat": [],
+            "preserve":["JQuery","Backbone"],
+            "require":{
+                "useAlmond": false,
+                "config": "config.js",
+                "modules":[],
+                "exclude":[],
+                "dependencies": []
+            },
+            "dependencies": []
+        },
+
         "build": {
             "root": "public",
             "scripts": "public/assets/scripts",
             "css": "public/assets/css",
             "fonts": "public/assets/fonts",
-            "images": "public/assets/images"
+            "images": "public/assets/images",
+            "templates": "public/assets/templates"
         },
 
         "resources": {
@@ -57,7 +72,8 @@
             "root": "source",
             "scripts": "source/scripts",
             "less": "source/less",
-            "sass": "source/sass"
+            "sass": "source/sass",
+            "templates": "source/templates"
         }
     }
 }

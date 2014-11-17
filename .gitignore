@@ -1,18 +1,10 @@
-### IDE files
-*.iml
-.idea
+### IDE Files ###
+# IDE files should be added to global .gitignore, not here.
 
 ### generated files
-/dist
-/cache
 /tmp
-*.min.js
-/webroot/assets/css/main.css
-/webroot/assets/css/main.min.css
-/assets/sketch/img
-/assets/sketch/icon-svg
-#intentionally including icon-font related files
-#intentionally including optimized images
+/build
+/public/assets
 
 ### managed directories
 node_modules
@@ -20,8 +12,6 @@ bower_components
 npm-debug.log
 
 ### package manager copied assets
-/webroot/assets/*/lib/
-/source/*/lib/
-
+source/**/vendor
 
 

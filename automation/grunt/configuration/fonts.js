@@ -72,7 +72,7 @@ module.exports = {
                 hashes: false,
                 syntax: 'bootstrap',
                 relativeFontPath: '<%= settings.css.fonts %>',
-                htmlDemo: settings.environment != 'prod',
+                htmlDemo: settings.environment !== 'prod',
                 destHtml: '<%= settings.build.fonts %>',
                 engine: '<%= settings.fonts.engine %>'
             }
