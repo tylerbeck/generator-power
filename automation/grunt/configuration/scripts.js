@@ -1,4 +1,5 @@
 var settings = require( '../settings' );
+var path = require( 'path' );
 
 //build requirejs configuration
 var requireModules =  [];
@@ -13,10 +14,11 @@ if ( settings.scripts.require.modules ){
 var requirePaths = {};
 if ( settings.scripts.require.exclude ){
     settings.scripts.require.exclude.forEach( function( name ){
-        requirePaths[ name ] = "empty:"
+        requirePaths[ name ] = "empty:";
     });
 }
 
+//creat function to check if obj is array and has values
 function hasFilesTest( obj ){
     return function(){
         if ( Array.isArray( obj ) ){
@@ -25,13 +27,26 @@ function hasFilesTest( obj ){
             }
         }
         return false;
-    }
+    };
 }
 
+
+//determine which files to watch and clean based on settings
 var watchFiles = [ '<%= settings.source.scripts %>/**' ];
-settings.scripts.require.dependencies.forEach( function( dependency ){
-    watchFiles.concat( dependency.src );
+var cleanFiles = [ '<%= settings.build.scripts %>/**' ];
+var dependencies = [].concat( settings.scripts.require.dependencies ).concat( settings.scripts.dependencies );
+dependencies.forEach( function( dependency ){
+    var srcs = [].concat( dependency.src );
+    var cwd = dependency.cwd || "";
+    var dest = dependency.dest || "";
+    srcs.forEach( function( src ){
+        var watch = path.join( cwd, src );
+        var clean = path.join( dest, src );
+        watchFiles.concat( watch );
+        cleanFiles.concat( clean );
+    });
 });
+
 
 /**
  * configuration
@@ -45,7 +60,8 @@ module.exports = {
         all: [
             'gruntfile.js',
             '<%= settings.source.scripts %>/**/*.js',
-            'automation/grunt/**/*.js'
+            'automation/grunt/**/*.js',
+            '!**/vendor/**/*.js' //don't jshint vendor scripts
         ],
         options: {
             jshintrc: '.jshintrc'
@@ -54,13 +70,13 @@ module.exports = {
 
     uglify: {
         options: {
-            compress: settings.environment !== 'prod' ? false : {
+            compress: settings.environment === 'dev' ? false : {
                 drop_console: true
             },
             mangle: {
                 except: settings.scripts.preserve
-            }
-
+            },
+            preserveComments: 'some'
         },
         copy:{
             files: [{
@@ -72,15 +88,6 @@ module.exports = {
         },
         concat:{
             files: settings.scripts.concat
-        },
-        'requirejs-dev': {
-            //in dev mode other files that are loaded via require must be specified
-            files: [{
-                expand: true,
-                cwd: '<%= settings.source.scripts %>',
-                src: '**/*.js',
-                dest: '<%= settings.build.scripts %>'
-            }]
         }
     },
 
@@ -103,13 +110,12 @@ module.exports = {
     copy: {
         'requirejs-dev': {
             //copy all scripts along with files specified in config
-            files: [
-                {
-                    expand: true,
-                    src: ['<%= settings.source.scripts %>/**'],
-                    dest: '<%= settings.build.scripts %>/'
-                }
-            ].concat( settings.scripts.require.dependencies )
+            files: [{
+                expand: true,
+                cwd: '<%= settings.source.scripts %>',
+                src: '**/*.js',
+                dest: '<%= settings.build.scripts %>'
+            }].concat( settings.scripts.require.dependencies )
         },
 
         'dependencies': {
@@ -120,7 +126,7 @@ module.exports = {
      * clean configuration
      */
     clean: {
-        scripts: [ "<%= settings.build.scripts %>" ]
+        scripts: cleanFiles
     },
 
 
