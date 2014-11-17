@@ -38,7 +38,7 @@
         },
 
         "scripts": {
-            "copy": ["**/*.js"],
+            "copy": [],
             "concat": [],
             "preserve":["JQuery","Backbone"],
             "require":{
