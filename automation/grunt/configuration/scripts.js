@@ -101,7 +101,18 @@ module.exports = {
                 baseUrl: '<%= settings.source.scripts %>',
                 mainConfigFile: '<%= settings.source.scripts %>/<%= settings.scripts.require.config %>',
                 modules: requireModules,
-                paths: requirePaths
+                paths: requirePaths,
+                dir: '<%= settings.build.scripts %>',
+                optimize: settings.prodDebug ? 'none' : 'uglify2',
+                onBuildRead: function (moduleName, path, contents) {
+                    //return contents;
+                    return settings.prodDebug ? contents : contents.replace(/console.log(.*);/g, '');
+                },
+                onBuildWrite: function (moduleName, path, contents) {
+                    // Add extra stufff;
+                    return contents;
+                }
+
             }
 
         }
@@ -159,7 +170,7 @@ module.exports = {
         'scripts-require': {
             options:{
                 config: {
-                    name: "settings.environment",
+                    property: "settings.environment",
                     value: "prod"
                 }
             },

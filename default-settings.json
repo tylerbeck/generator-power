@@ -1,6 +1,7 @@
 {
     "settings": {
         "environment": "dev",
+        "prodDebug": false,
         "styleLang": "less",
         "vendorPath": "vendor",
 
