@@ -10,10 +10,18 @@ var fonts = settings.fonts.families ;
 for ( var family in fonts ){
     for ( var style in fonts[ family ] ){
         for ( var weight in fonts[ family ][ style ] ){
-            fonts[ family ][ style ][ weight ] = '<%= settings.resources.fonts %>/' + fonts[ family ][ style ][ weight ];
+            fonts[ family ][ style ][ weight ] = settings.resources.fonts+'/' + fonts[ family ][ style ][ weight ];
         }
     }
 }
+
+var iconFonts = {};
+iconFonts[ settings.fonts.iconFontName ] = {
+    "normal": {
+        "400": "<%= settings.resources.fonts %>/<%= settings.fonts.iconFontName %>/<%= settings.fonts.iconFontName %>.ttf"
+    }
+};
+
 
 /**
  * configuration
@@ -42,13 +50,7 @@ module.exports = {
         },
 
         icon: {
-            fonts: {
-                '<%= settings.fonts.iconFontName %>':{
-                    "normal":{
-                        "400": "<%= settings.fonts.iconFontName %>/<%= settings.fonts.iconFontName %>.ttf"
-                    }
-                }
-            }
+            fonts: iconFonts
         }
     },
 
