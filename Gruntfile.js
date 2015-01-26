@@ -14,7 +14,8 @@ module.exports = new GruntStartup( {
         'grunt-sketch'
     ],
     taskPaths: [
-        'automation/grunt/tasks/'
+        'automation/grunt/tasks/',
+        'automation/grunt/tasks/utility/'
     ],
     configPaths: [
         './default-settings.json',

@@ -5,6 +5,8 @@
  */
 var settings = require( '../settings' );
 var fonts = settings.fonts.families ;
+var grunt = require( 'grunt' );
+var path = require( 'path' );
 
 //update paths to use font resource path
 for ( var family in fonts ){
@@ -21,6 +23,12 @@ iconFonts[ settings.fonts.iconFontName ] = {
         "400": "<%= settings.resources.fonts %>/<%= settings.fonts.iconFontName %>/<%= settings.fonts.iconFontName %>.ttf"
     }
 };
+
+function hasIconSVGTest(){
+    var list = grunt.file.expand( path.join( settings.resources.icons, '**/*.svg' ) );
+    grunt.log.writeln( list );
+    return list.length > 0;
+}
 
 
 /**
@@ -108,6 +116,30 @@ module.exports = {
             ifFalse:[
                 'set-font-engine:node'
             ]
+        },
+
+        'embedfont': {
+            options:{
+                test: hasIconSVGTest()
+            },
+            ifTrue: [
+                'embedfont'
+            ],
+            ifFalse:[
+                'embedfont:default'
+            ]
+        },
+
+        'webfont': {
+            options:{
+                test: hasIconSVGTest()
+            },
+            ifTrue: [
+                'webfont'
+            ],
+            ifFalse:[
+
+            ]
         }
     },
 
@@ -122,7 +154,7 @@ module.exports = {
          */
         fonts: {
             files: [ '<%= settings.resources.fonts %>/**/*' ],
-            tasks: [ 'if:fontforge', 'embedfont', 'notify:fonts' ],
+            tasks: [ 'if:fontforge', 'if:embedfont', 'notify:fonts' ],
             options: {
                 spawn: true
             }
@@ -133,7 +165,7 @@ module.exports = {
          */
         icons: {
             files: [ '<%= settings.resources.icons %>/**/*.svg' ],
-            tasks: [ 'if:fontforge', 'webfont', 'notify:icons' ],
+            tasks: [ 'if:fontforge', 'if:webfont', 'notify:icons' ],
             options: {
                 spawn: true
             }

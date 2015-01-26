@@ -2,15 +2,11 @@ var settings = require( '../settings' );
 var path = require( 'path' );
 
 //build requirejs configuration
-var requireModules =  [];
-if ( settings.scripts.require.modules ){
-    settings.scripts.require.modules.forEach( function( module ){
-        requireModules.push({
-            name: module,
-            out: "<%= settings.build.scripts %>/"+module+".js"
-        });
-    });
+var requireMain =  "almond";
+if ( !settings.scripts.require.useAlmond ){
+    requireMain = settings.scripts.require.name;
 }
+
 var requirePaths = {};
 if ( settings.scripts.require.exclude ){
     settings.scripts.require.exclude.forEach( function( name ){
@@ -100,13 +96,14 @@ module.exports = {
             options:{
                 baseUrl: '<%= settings.source.scripts %>',
                 mainConfigFile: '<%= settings.source.scripts %>/<%= settings.scripts.require.config %>',
-                modules: requireModules,
                 paths: requirePaths,
-                dir: '<%= settings.build.scripts %>',
-                optimize: settings.prodDebug ? 'none' : 'uglify2',
+                optimize: settings.debug ? 'none' : 'uglify2',
+                out: '<%= settings.build.scripts %>/'+settings.scripts.require.out,
+                name: requireMain,
+                include: settings.scripts.require.name,
                 onBuildRead: function (moduleName, path, contents) {
                     //return contents;
-                    return settings.prodDebug ? contents : contents.replace(/console.log(.*);/g, '');
+                    return settings.debug ? contents : contents.replace(/console.log(.*);/g, '');
                 },
                 onBuildWrite: function (moduleName, path, contents) {
                     // Add extra stufff;
@@ -175,21 +172,10 @@ module.exports = {
                 }
             },
             ifTrue: [
-                'if:scripts-require-optimize'
-            ],
-            ifFalse:[
-                'copy:requirejs-dev'
-            ]
-        },
-        'scripts-require-optimize': {
-            options:{
-                test: hasFilesTest( settings.scripts.require.modules )
-            },
-            ifTrue: [
                 'requirejs:optimize'
             ],
             ifFalse:[
-
+                'requirejs:optimize' // always use require
             ]
         }
     },

@@ -1,9 +1,61 @@
 {
     "settings": {
         "environment": "dev",
-        "prodDebug": false,
+        "debug": true,
         "styleLang": "less",
         "vendorPath": "vendor",
+
+        "dependencies": {
+            "shim": {
+                "flexslider": [
+                    "flexslider.less",
+                    "jquery.flexslider.js",
+                    "fonts/*"
+                ],
+                "leaflet": [
+                    "dist/leaflet.css",
+                    "dist/leaflet.js",
+                    "dist/images/*"
+                ],
+                "q": "q.js"
+            },
+            "map": {
+                "less":{
+                    "normalize-css/normalize.css": "normalize.less",
+                    "leaflet/dist/leaflet.css": "leaflet.less"
+                },
+                "sass": {
+                    "normalize-css/normalize.css": "_normalize.scss",
+                    "leaflet/dist/leaflet.css": "_leaflet.scss"
+                },
+                "fonts":{},
+                "js": {},
+                "images":{ }
+            },
+
+            "extensions": {
+                "js": ["js"],
+                "less": ["less","css"],
+                "sass": ["sass","css"],
+                "fonts": ["woff","eot","ttf","svg"],
+                "images": ["png","jpg","svg","gif"]
+            },
+
+            "replace": {
+                "js": {},
+                "less": {
+                    "flexslider": {
+                        "url\\('fonts/": "url('/assets/fonts/vendor/flexslider/"
+                    },
+                    "leaflet": {
+                        "url\\(images/": "url(/assets/images/vendor/leaflet/"
+                    }
+                },
+                "sass": {},
+                "fonts": {},
+                "images": {}
+            }
+        },
 
         "css":{
             "images": "../images",
@@ -14,7 +66,7 @@
         },
 
         "images":{
-            "types": "png,jpg,jpeg,gif,svg"
+            "types": "png,jpg,jpeg,gif,svg,ico"
         },
 
         "fonts": {
@@ -41,11 +93,12 @@
         "scripts": {
             "copy": [],
             "concat": [],
-            "preserve":["JQuery","Backbone"],
+            "preserve":[],
             "require":{
-                "useAlmond": false,
+                "useAlmond": true,
                 "config": "config.js",
-                "modules":[],
+                "name": "fox-hollow",
+                "out": "fox-hollow.js",
                 "exclude":[],
                 "dependencies": []
             },

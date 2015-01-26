@@ -1,6 +1,21 @@
+var settings = require( '../settings' );
 /**
  * configuration
  */
+
+
+//update settings with defaults for bower
+settings.dependencies = settings.dependencies || {};
+function setProps( obj, props, Type ){
+    props.split(" " ).forEach( function( prop ){
+       obj[ prop ] = obj[ prop ] || new Type();
+    });
+}
+setProps( settings, 'dependencies', Object );
+setProps( settings.dependencies, 'shim extensions map replace', Object );
+setProps( settings.dependencies.extensions, 'js less sass fonts images', Array );
+setProps( settings.dependencies.map, 'js less sass fonts images', Object );
+setProps( settings.dependencies.replace, 'js less sass fonts images', Object );
 
 module.exports = {
 
@@ -29,33 +44,47 @@ module.exports = {
              * or can be used to change the included files for a package
              * <package-name>: <file-path-glob> | Array(<file-path-glob>)
              */
-            shim: {
-
-            }
+            shim: settings.dependencies.shim
 
         },
         js: {
             options: {
                 dest: '<%= settings.source.scripts %>/<%= settings.vendorPath %>',
-                extensions: ['js']
+                extensions: settings.dependencies.extensions.js,
+                map: settings.dependencies.map.js,
+                replace: settings.dependencies.replace.js
             }
         },
         less: {
             options: {
                 dest: '<%= settings.source.less %>/<%= settings.vendorPath %>',
-                extensions: ['css'],
-                map: {
-                    'normalize-css/normalize.css': 'normalize.less'
-                }
+                extensions: settings.dependencies.extensions.less,
+                map: settings.dependencies.map.less,
+                replace: settings.dependencies.replace.less
             }
         },
         sass: {
             options: {
                 dest: '<%= settings.source.sass %>/<%= settings.vendorPath %>',
-                extensions: ['css'],
-                map: {
-                    'normalize-css/normalize.css': '_normalize.scss'
-                }
+                extensions: settings.dependencies.extensions.sass,
+                map: settings.dependencies.map.less,
+                replace: settings.dependencies.replace.less
+            }
+        },
+        fonts: {
+            options: {
+                dest: '<%= settings.build.fonts %>/<%= settings.vendorPath %>',
+                extensions: settings.dependencies.extensions.fonts,
+                map: settings.dependencies.map.fonts,
+                replace: settings.dependencies.replace.fonts
+            }
+        },
+        images: {
+            options: {
+                dest: '<%= settings.build.images %>/<%= settings.vendorPath %>',
+                extensions: settings.dependencies.extensions.images,
+                map: settings.dependencies.map.images,
+                replace: settings.dependencies.replace.images
             }
         }
     },
@@ -95,11 +124,15 @@ module.exports = {
             },
             ifTrue: [
                 'bower-map:js',
-                'bower-map:sass'
+                'bower-map:sass',
+                'bower-map:fonts',
+                'bower-map:images'
             ],
             ifFalse: [
                 'bower-map:js',
-                'bower-map:less'
+                'bower-map:less',
+                'bower-map:fonts',
+                'bower-map:images'
             ]
         }
     },

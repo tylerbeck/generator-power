@@ -4,8 +4,8 @@ module.exports = function( grunt ) {
 
     grunt.registerTask( 'build-fonts', [
         'if:fontforge',
-        'webfont:icons',
-        'embedfont',
+        'if:webfont',
+        'if:embedfont',
         'notify:fonts'
     ] );
 };

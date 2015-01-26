@@ -122,9 +122,13 @@ module.exports = {
                 }
             },
             ifTrue: [
+                'generate-font-scss',
+                'generate-vendor-scss',
                 'compass'
             ],
             ifFalse: [
+                'generate-font-less',
+                'generate-vendor-less',
                 'less'
             ]
         },
