@@ -32,7 +32,6 @@
                 "js": {},
                 "images":{ }
             },
-
             "extensions": {
                 "js": ["js"],
                 "less": ["less","css"],
@@ -40,7 +39,6 @@
                 "fonts": ["woff","eot","ttf","svg"],
                 "images": ["png","jpg","svg","gif"]
             },
-
             "replace": {
                 "js": {},
                 "less": {

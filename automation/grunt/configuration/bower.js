@@ -1,4 +1,5 @@
 var settings = require( '../settings' );
+var setProps = require( '../modules/setProps' );
 /**
  * configuration
  */
@@ -6,11 +7,6 @@ var settings = require( '../settings' );
 
 //update settings with defaults for bower
 settings.dependencies = settings.dependencies || {};
-function setProps( obj, props, Type ){
-    props.split(" " ).forEach( function( prop ){
-       obj[ prop ] = obj[ prop ] || new Type();
-    });
-}
 setProps( settings, 'dependencies', Object );
 setProps( settings.dependencies, 'shim extensions map replace', Object );
 setProps( settings.dependencies.extensions, 'js less sass fonts images', Array );
