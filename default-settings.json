@@ -91,14 +91,13 @@
         "scripts": {
             "copy": [],
             "concat": [],
-            "preserve":[],
             "require":{
                 "useAlmond": true,
                 "config": "config.js",
-                "name": "fox-hollow",
-                "out": "fox-hollow.js",
-                "exclude":[],
-                "dependencies": []
+                "name": "main",
+                "out": "main.js",
+                "exclude": [],
+                "preserve": []
             },
             "dependencies": []
         },
