@@ -14,7 +14,7 @@ if ( settings.scripts.require.exclude ){
     });
 }
 
-//creat function to check if obj is array and has values
+//create function to check if obj is array and has values
 function hasFilesTest( obj ){
     return function(){
         if ( Array.isArray( obj ) ){
@@ -30,7 +30,7 @@ function hasFilesTest( obj ){
 //determine which files to watch and clean based on settings
 var watchFiles = [ '<%= settings.source.scripts %>/**' ];
 var cleanFiles = [ '<%= settings.build.scripts %>/**' ];
-var dependencies = [].concat( settings.scripts.require.dependencies ).concat( settings.scripts.dependencies );
+var dependencies = [].concat( settings.scripts.dependencies );
 dependencies.forEach( function( dependency ){
     var srcs = [].concat( dependency.src );
     var cwd = dependency.cwd || "";
@@ -142,6 +142,20 @@ module.exports = {
      * conditionally run
      */
     if: {
+        'jshint': {
+            options:{
+                config: {
+                    property: "settings.jshint",
+                    value: false
+                }
+            },
+            ifTrue: [
+
+            ],
+            ifFalse:[
+                'jshint'
+            ]
+        },
         'scripts-copy': {
             options:{
                 test: hasFilesTest( settings.scripts.copy )
