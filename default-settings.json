@@ -4,7 +4,6 @@
         "debug": true,
         "styleLang": "less",
         "vendorPath": "vendor",
-
         "dependencies": {
             "shim": {
                 "flexslider": [
@@ -54,7 +53,6 @@
                 "images": {}
             }
         },
-
         "css":{
             "images": "../images",
             "fonts": "../fonts",
@@ -62,11 +60,9 @@
                 "main"
             ]
         },
-
         "images":{
             "types": "png,jpg,jpeg,gif,svg,ico"
         },
-
         "fonts": {
             "engine": "fontforge",
             "iconFontName": "IconFont",
@@ -87,7 +83,6 @@
                 }
             }
         },
-
         "scripts": {
             "copy": [],
             "concat": [],
@@ -101,7 +96,6 @@
             },
             "dependencies": []
         },
-
         "build": {
             "root": "public",
             "scripts": "public/assets/scripts",
@@ -110,7 +104,6 @@
             "images": "public/assets/images",
             "templates": "public/assets/templates"
         },
-
         "resources": {
             "root": "resources",
             "fonts": "resources/fonts",
@@ -118,7 +111,6 @@
             "icons": "resources/icons",
             "sketch": "resources/sketch"
         },
-
         "source": {
             "root": "source",
             "scripts": "source/scripts",
