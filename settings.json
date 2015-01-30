@@ -3,9 +3,9 @@
         "environment": "dev",
         "debug": true,
         "styleLang": "less",
-        "vendorPath": "vendor",
 
         "dependencies": {
+            "vendorPath": "vendor",
             "shim": {
                 "flexslider": [
                     "flexslider.less",
@@ -42,9 +42,6 @@
             "replace": {
                 "scripts": {},
                 "less": {
-                    "flexslider": {
-                        "url\\('fonts/": "url('/assets/fonts/vendor/flexslider/"
-                    },
                     "leaflet": {
                         "url\\(images/": "url(/assets/images/vendor/leaflet/"
                     }

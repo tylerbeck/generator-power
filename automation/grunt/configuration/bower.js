@@ -45,7 +45,7 @@ module.exports = {
         },
         js: {
             options: {
-                dest: '<%= settings.source.scripts %>/<%= settings.vendorPath %>',
+                dest: '<%= settings.source.scripts %>/<%= settings.dependencies.vendorPath %>',
                 extensions: settings.dependencies.extensions.scripts,
                 map: settings.dependencies.map.scripts,
                 replace: settings.dependencies.replace.scripts
@@ -53,7 +53,7 @@ module.exports = {
         },
         less: {
             options: {
-                dest: '<%= settings.source.less %>/<%= settings.vendorPath %>',
+                dest: '<%= settings.source.less %>/<%= settings.dependencies.vendorPath %>',
                 extensions: settings.dependencies.extensions.less,
                 map: settings.dependencies.map.less,
                 replace: settings.dependencies.replace.less
@@ -61,7 +61,7 @@ module.exports = {
         },
         sass: {
             options: {
-                dest: '<%= settings.source.sass %>/<%= settings.vendorPath %>',
+                dest: '<%= settings.source.sass %>/<%= settings.dependencies.vendorPath %>',
                 extensions: settings.dependencies.extensions.sass,
                 map: settings.dependencies.map.less,
                 replace: settings.dependencies.replace.less
@@ -69,7 +69,7 @@ module.exports = {
         },
         fonts: {
             options: {
-                dest: '<%= settings.build.fonts %>/<%= settings.vendorPath %>',
+                dest: '<%= settings.build.fonts %>/<%= settings.dependencies.vendorPath %>',
                 extensions: settings.dependencies.extensions.fonts,
                 map: settings.dependencies.map.fonts,
                 replace: settings.dependencies.replace.fonts
@@ -77,7 +77,7 @@ module.exports = {
         },
         images: {
             options: {
-                dest: '<%= settings.build.images %>/<%= settings.vendorPath %>',
+                dest: '<%= settings.build.images %>/<%= settings.dependencies.vendorPath %>',
                 extensions: settings.dependencies.extensions.images,
                 map: settings.dependencies.map.images,
                 replace: settings.dependencies.replace.images
@@ -95,9 +95,9 @@ module.exports = {
          * <file-path-glob>
          */
         'bower-map': [
-            '<%= settings.source.less %>/<%= settings.vendorPath %>/*',
-            '<%= settings.source.sass %>/<%= settings.vendorPath %>/*',
-            '<%= settings.source.scripts %>/<%= settings.vendorPath %>/*'
+            '<%= settings.source.less %>/<%= settings.dependencies.vendorPath %>/*',
+            '<%= settings.source.sass %>/<%= settings.dependencies.vendorPath %>/*',
+            '<%= settings.source.scripts %>/<%= settings.dependencies.vendorPath %>/*'
         ],
         /**
          * cleans bower_components folder

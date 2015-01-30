@@ -31,8 +31,6 @@ module.exports = {
 ```
 
 
-
-
 ### source paths
 References to location of coded assets. All paths are relative to the directory containing `"Gruntfile.js"`.   
 ```
@@ -114,9 +112,10 @@ References to output paths. All paths are relative to the directory containing `
 ```
 | Attribute  | Description | required | inheritable |
 |------------|-------------|----------|-------------|
+| vendorPath | the directory into which dependencies are copied (default "vendor") | √	|√ 
 | shim | *specify or override included files by package* |  | √ |
-| map | *remap destination paths for included assets by asset type* |  | √ |
 | extensions | *define file types to include by asset type* | | √ |
+| map | *remap destination paths for included assets by asset type* |  | √ |
 | replace | *define regex file content replacements by asset type by package* |  | √ |
 
 #####extensions example
@@ -166,6 +165,19 @@ Use *map* to copy dependencies to a specific location other than the default des
             "map": {
                 "less":{
                     "normalize-css/normalize.css": "/normalize.less",
+                }
+            }
+        }
+```
+#####replace example
+Use replace to change values within external assets.  Replacements should be specifed per asset type per package name.  The values should take the form `RegEx String` : `replacement string`
+```
+        "dependencies": {
+            "replace": {
+                "less":{
+                    "flexslider": {
+                        "url\\('fonts/": "url('/assets/fonts/vendor/flexslider/"
+                    },
                 }
             }
         }
