@@ -9,9 +9,9 @@ var setProps = require( '../modules/setProps' );
 settings.dependencies = settings.dependencies || {};
 setProps( settings, 'dependencies', Object );
 setProps( settings.dependencies, 'shim extensions map replace', Object );
-setProps( settings.dependencies.extensions, 'js less sass fonts images', Array );
-setProps( settings.dependencies.map, 'js less sass fonts images', Object );
-setProps( settings.dependencies.replace, 'js less sass fonts images', Object );
+setProps( settings.dependencies.extensions, 'scripts less sass fonts images', Array );
+setProps( settings.dependencies.map, 'scripts less sass fonts images', Object );
+setProps( settings.dependencies.replace, 'scripts less sass fonts images', Object );
 
 module.exports = {
 
@@ -46,9 +46,9 @@ module.exports = {
         js: {
             options: {
                 dest: '<%= settings.source.scripts %>/<%= settings.vendorPath %>',
-                extensions: settings.dependencies.extensions.js,
-                map: settings.dependencies.map.js,
-                replace: settings.dependencies.replace.js
+                extensions: settings.dependencies.extensions.scripts,
+                map: settings.dependencies.map.scripts,
+                replace: settings.dependencies.replace.scripts
             }
         },
         less: {

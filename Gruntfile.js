@@ -18,7 +18,7 @@ module.exports = new GruntStartup( {
         'automation/grunt/tasks/utility/'
     ],
     configPaths: [
-        './default-settings.json',
+        './settings.json',
         './local-settings.json',
         'automation/grunt/configuration/']
 } );

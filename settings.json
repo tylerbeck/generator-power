@@ -29,18 +29,18 @@
                     "leaflet/dist/leaflet.css": "_leaflet.scss"
                 },
                 "fonts":{},
-                "js": {},
+                "scripts": {},
                 "images":{ }
             },
             "extensions": {
-                "js": ["js"],
+                "scripts": ["js"],
                 "less": ["less","css"],
                 "sass": ["sass","css"],
                 "fonts": ["woff","eot","ttf","svg"],
                 "images": ["png","jpg","svg","gif"]
             },
             "replace": {
-                "js": {},
+                "scripts": {},
                 "less": {
                     "flexslider": {
                         "url\\('fonts/": "url('/assets/fonts/vendor/flexslider/"
@@ -50,7 +50,6 @@
                     }
                 },
                 "sass": {},
-                "fonts": {},
                 "images": {}
             }
         },

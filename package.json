@@ -1,8 +1,10 @@
 {
-  "name": "myfoxhollow",
+  "name": "generator-web",
   "version": "0.0.1",
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "yeoman-generator": "^0.18.7"
+  },
   "devDependencies": {
     "bower": "^1.3.12",
     "grunt": "^0.4.5",
