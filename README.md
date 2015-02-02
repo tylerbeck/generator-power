@@ -6,30 +6,32 @@ The goal of this template is to create a consistent framework for front-end web 
 
 Common front-end processes have been automated using `grunt`, but the configuration of those taks has been streamlined and moved to a JSON settings file. The majority of projects can be configured via this JSON file without any changes to the underlying grunt task configurations.  Additionally these settings files can be overridden in order to provide environment specific settings variations.
 
+###features
+ - Dependency management
+ - Stylesheet compilation (less or sass), optimization, and minification
+ - Image asset export using Sketch/Sketchtool
+ - Image minification
+ - Web embeddable font generation
+ - Icon font generation from SVGs
+ - Script minification, concatenation
+ - RequireJS compilation; standard, or self-contained using AlmondJS
+
 
 ##Setup
 Todo: create `yo generator` to initialize a new project
 
 ##Basic Configuration
-Configuration files can be expressed as JSON or JS files and must be referenced in order of precedence in `"Gruntfile.js"`.  Attributes marked as required must be present somewhere in the settings inheritance.
+Configuration files can be expressed as JSON files.  Attributes marked as required must be present somewhere in the settings inheritance. Files with higher `order` attribute values will override files with lower values.  Objects are merged recursively, Primitives and Arrays are overwritten.
 
 *JSON settings file*
 ```
 {
+	"order": 0,
 	"settings": {
 		...
 	}
 }
 ```
-*JS settings file*
-```
-module.exports = {
-	settings: {
-		...
-	}
-}
-```
-
 
 ### source paths
 References to location of coded assets. All paths are relative to the directory containing `"Gruntfile.js"`.   
@@ -100,10 +102,11 @@ References to output paths. All paths are relative to the directory containing `
 
 
 ###dependencies
-`grunt-bower-map` is used to pick and place external dependency assets installed via bower.  There are seven asset types that have been predefined for specifying options including js, less, sass, fonts, and images.  Files can be copied, renamed and even modified.
+`grunt-bower-map` is used to pick and place external dependency assets installed via bower.  There are five asset types that have been predefined for specifying options: js, less, sass, fonts, and images.  Files can be copied, renamed and even modified using the following configuration options.
 
 ```
         "dependencies": {
+        	"path": "vendor"
             "shim": {},
             "map": {},
             "extensions": {},
@@ -112,14 +115,23 @@ References to output paths. All paths are relative to the directory containing `
 ```
 | Attribute  | Description | required | inheritable |
 |------------|-------------|----------|-------------|
-| vendorPath | the directory into which dependencies are copied (default "vendor") | √	|√ 
+| vendorPath | the directory into which dependencies are copied within each asset type destination (default "vendor") | 	|√ 
 | shim | *specify or override included files by package* |  | √ |
 | extensions | *define file types to include by asset type* | | √ |
 | map | *remap destination paths for included assets by asset type* |  | √ |
 | replace | *define regex file content replacements by asset type by package* |  | √ |
 
+#####asset type destinations
+| Asset Type  | Path  |
+|---------------|----------------|
+| scripts    |   settings.source.scripts + "/" + settings.dependencies.path  |
+| less    |   settings.source.less + "/" + settings.dependencies.path  |
+| sass    |   settings.source.sass + "/" + settings.dependencies.path  |
+| fonts    |   settings.build.fonts + "/" + settings.dependencies.path  |
+| images    |   settings.build.images + "/" + settings.dependencies.path  |
+
 #####extensions example
-The values of extensions determines which types of files to include in the mapping operation.
+The values in extensions determines which types of files to include in the mapping operation.
 ```
             "extensions": {
                 "scripts": ["js"],

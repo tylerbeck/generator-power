@@ -1,12 +1,19 @@
 ### IDE Files ###
 # IDE files should be added to global .gitignore, not here.
 
+### generated files
+/tmp
+/build
+/public/assets
+
 ### managed directories
 node_modules
 bower_components
 npm-debug.log
 
-### test directories
-/tmp
+### package manager copied assets
+source/**/vendor
 
+### local settings file
+local-settings.json
 

@@ -1,0 +1,15 @@
+{
+    "order": 999,
+    "settings": {
+
+        "style": {
+            "optimize": false
+        },
+
+        "scripts": {
+            "debug": true,
+            "compress": false
+        }
+
+    }
+}

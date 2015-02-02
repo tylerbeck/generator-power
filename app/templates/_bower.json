@@ -1,0 +1,12 @@
+{
+  "name": "project-name",
+  "version": "0.0.1",
+  "dependencies": {
+    "normalize-css": "latest"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ]
+}
