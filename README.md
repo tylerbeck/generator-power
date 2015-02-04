@@ -2,7 +2,7 @@
 ============
 
 ##Overview
-The goal of this template is to create a consistent framework for front-end web and application development and implement tools to facilitate best practices through the use of automation and templates.
+The goal of this template is to create a consistent framework for front-end web and application development and to implement tools that facilitate best practices through the use of automation and templating.
 
 Common front-end processes have been automated using `grunt`, but the configuration of those taks has been streamlined and moved to a JSON settings file. The majority of projects can be configured via this JSON file without any changes to the underlying grunt task configurations.  Additionally these settings files can be overridden in order to provide environment specific settings variations.
 
@@ -33,7 +33,7 @@ Configuration files can be expressed as JSON files.  Attributes marked as requir
 }
 ```
 
-### source paths
+###source
 References to location of coded assets. All paths are relative to the directory containing `"Gruntfile.js"`.   
 ```
         "source": {
@@ -54,7 +54,7 @@ References to location of coded assets. All paths are relative to the directory 
 
 
 
-###resource paths
+###resource
 References to locations of binary, file and image assets. All paths are relative to the directory containing `"Gruntfile.js"`.   
 ```
         "resources": {
@@ -79,7 +79,7 @@ References to locations of binary, file and image assets. All paths are relative
 
 
 
-###build paths
+###build
 References to output paths. All paths are relative to the directory containing `"Gruntfile.js"`.   
 ```
         "build": {
@@ -182,7 +182,7 @@ Use *map* to copy dependencies to a specific location other than the default des
         }
 ```
 #####replace example
-Use replace to change values within external assets.  Replacements should be specifed per asset type per package name.  The values should take the form `RegEx String` : `replacement string`
+Use replace to change values within external assets.  Replacements should be specifed per asset type per package name.  The values should take the form `RegEx Pattern (String)` : `replacement string`
 ```
         "dependencies": {
             "replace": {
@@ -194,3 +194,29 @@ Use replace to change values within external assets.  Replacements should be spe
             }
         }
 ```
+
+###style
+The `style` attribute can be used to determine what and how source styles get compiled.
+```
+        "style": {
+            "language": "<%= styleLanguage %>",
+            "optimize": true,
+            "browsers": [
+                "ie > 7",
+                "Firefox > 3.5",
+                "chrome > 9",
+                "safari > 5"
+            ],
+            "files": [
+            	"main"
+            ]
+        }
+```
+
+| Attribute  | Description | required | inheritable |
+|------------|-------------|----------|-------------|
+| language | `"less"` or `"sass"` | √ | √ |
+| optimize | Boolean flag indicating whether to compress and optimize css. If set to `true`, css output will be optimized with cmq and cssmin  | √  | √ |
+| browsers | a browserlist style (https://github.com/ai/browserslist) array of browsers to autoprefix | √ | √ |
+| files | an array of style source files to compile (extension omitted) | √ | √ |
+

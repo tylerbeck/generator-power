@@ -19,7 +19,7 @@ var path = require('path');
  */
 function getMapping( src, srcExt, dest, destExt ){
     var obj = {};
-    settings.css.files.forEach( function( name ){
+    settings.style.files.forEach( function( name ){
         obj[ path.join( dest, name+'.'+destExt ) ] = path.join( src, name+'.'+srcExt );
     });
     return obj;
@@ -44,7 +44,7 @@ module.exports = {
             },
             files: getMapping(
                 settings.source.less, 'less',
-                settings.build.css, 'css'
+                settings.build.styles, 'css'
             )
         }
     },
@@ -66,10 +66,10 @@ module.exports = {
     autoprefixer: {
         options: {
             expand: true,
-            browsers: ['ie > 7', 'Firefox > 3.5', 'chrome > 9', 'safari > 5']
+            browsers: settings.style.browsers
         },
         main: {
-            src: '<%= settings.build.css %>/**/*.css'
+            src: '<%= settings.build.styles %>/**/*.css'
         }
     },
 
@@ -84,8 +84,8 @@ module.exports = {
         },
         main: {
             files: {
-                '<%= settings.build.css %>': [
-                    '<%= settings.build.css %>/**/*.css'
+                '<%= settings.build.styles %>': [
+                    '<%= settings.build.styles %>/**/*.css'
                 ]
             }
         }
@@ -99,8 +99,8 @@ module.exports = {
     cssmin: {
         default: {
             files: getMapping(
-                settings.build.css, 'css',
-                settings.build.css, 'css'
+                settings.build.styles, 'css',
+                settings.build.styles, 'css'
             )
         }
     },
@@ -114,7 +114,7 @@ module.exports = {
          */
         //TODO: update this task, or create custom task to only remove styles that are in compiled
         'css': [
-            '<%= settings.build.css %>/*'
+            '<%= settings.build.styles %>/*'
         ]
     },
 
@@ -153,8 +153,7 @@ module.exports = {
                 'cssmin'
             ],
             ifFalse: [
-                'autoprefixer',
-                'cmq'
+                'autoprefixer'
             ]
         }
     },

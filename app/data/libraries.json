@@ -1,0 +1,48 @@
+{
+    "flexslider": {},
+    "jquery#2.x":{},
+    "jquery#1.x":{},
+    "handlebars": {
+        "shim": [
+            "handlebars.js",
+            "handlebars.amd.js",
+            "handlebars.runtime.js",
+            "handlebars.runtime.amd.js"
+        ],
+        "map":{
+            "scripts":{
+                "handlebars":"/"
+            }
+        }
+    },
+    "normalize-css": {
+        "map":{
+            "less":{
+                "normalize-css/normalize.css": "normalize.less"
+            },
+            "sass":{
+                "normalize-css/normalize.css": "_normalize.scss"
+            }
+        }
+    },
+    "q#1.x": {
+        "shim": "q.js"
+    },
+    "requirejs-text": {
+        "shim": "text.js",
+        "map":{
+            "scripts":{
+                "requirejs-text": "/requirejs-plugins/"
+            }
+        }
+    },
+    "requirejs-plugins": {
+        "map":{
+            "scripts": {
+                "requirejs-plugins/src": "/requirejs-plugins/",
+                "requirejs-plugins/lib": "/requirejs-plugins/"
+            }
+        }
+    }
+
+}

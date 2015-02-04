@@ -1,9 +1,7 @@
 {
-  "name": "project-name",
+  "name": "<%= projectName %>",
   "version": "0.0.1",
-  "dependencies": {
-    "normalize-css": "latest"
-  },
+  "dependencies": {},
   "ignore": [
     "**/.*",
     "node_modules",

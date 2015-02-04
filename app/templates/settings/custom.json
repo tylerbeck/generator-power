@@ -2,31 +2,30 @@
     "order": -999,
     "settings": {
         "build": {
-            "root": "public",
-            "scripts": "public/assets/scripts",
-            "css": "public/assets/css",
-            "fonts": "public/assets/fonts",
-            "images": "public/assets/images",
-            "templates": "public/assets/templates"
+            "root": "<%= buildRoot %>",
+            "scripts": "<%= buildRoot %>/<%= buildScripts %>",
+            "css": "<%= buildRoot %>/<%= buildStyles %>",
+            "fonts": "<%= buildRoot %>/<%= buildFonts %>",
+            "images": "<%= buildRoot %>/<%= buildImages %>"
         },
 
         "resources": {
-            "root": "resources",
-            "fonts": "resources/fonts",
-            "images": "resources/images",
-            "icons": "resources/icons",
-            "sketch": "resources/sketch"
+            "root": "<%= resourceRoot %>",
+            "fonts": "<%= resourceRoot %>/<%= resourceFonts %>",
+            "images": "<%= resourceRoot %>/<%= resourceImages %>",
+            "icons": "<%= resourceRoot %>/<%= resourceIcons %>",
+            "sketch": "<%= resourceRoot %>/<%= resourceSketch %>"
         },
 
         "source": {
-            "root": "source",
-            "scripts": "source/scripts",
-            "less": "source/less",
-            "sass": "source/sass"
+            "root": "<%= sourceRoot %>",
+            "scripts": "<%= sourceRoot %>/<%= sourceScripts %>",
+            "less": "<%= sourceRoot %>/<%= sourceLess %>",
+            "sass": "<%= sourceRoot %>/<%= sourceSass %>"
         },
 
         "dependencies": {
-            "path": "vendor",
+            "path": "<%= vendor %>",
             "shim": {},
             "map": {
                 "less": {},
@@ -51,10 +50,14 @@
         },
 
         "style": {
+            "language": "<%= styleLanguage %>",
             "optimize": true,
-            "language": "less",
-            "images": "../images",
-            "fonts": "../fonts",
+            "browsers": [
+                "ie > 7",
+                "Firefox > 3.5",
+                "chrome > 9",
+                "safari > 5"
+            ],
             "files": []
         },
 
