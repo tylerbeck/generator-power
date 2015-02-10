@@ -3,6 +3,7 @@ var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var yosay = require('yosay');
 var path = require('path');
+var glob = require('glob');
 var _ = require('lodash');
 
 /**
@@ -89,20 +90,30 @@ function libSelected( name ){
 }
 
 /**
- * generate general promptes
+ * generate general prompts
  * @param self
  * @returns {*[]}
  */
 function getGeneralPrompts( self ){
+    var files = glob.sync( self.templatePath( 'settings/**/*.json' ) );
+    var choices = [];
+    files.forEach( function( file ){
+        var settings = self.fs.readJSON( file );
+        if ( settings.label ){
+            var value = path.basename( file ).replace( path.extname( file ), "" );
+            choices.push({
+                name: settings.label,
+                value: value
+            });
+        }
+    });
+
     return [
         {
             name: 'type',
             type: 'list',
             message: 'Project type',
-            choices: [
-                { name: "Custom Setup", value: "custom" },
-                { name: "Default Setup", value: "default" }
-            ],
+            choices: choices,
             default: 'custom'
         },
         {
@@ -428,13 +439,13 @@ module.exports = yeoman.generators.Base.extend({
 
             this.fs.copyTpl(
                 path.join( this.templatePath('settings'), this.responses.type+'.json' ),
-                this.destinationPath('default-settings.json'),
+                this.destinationPath('settings.json'),
                 this.responses
             );
 
             //add dynamic values
             var libraries = self.fs.readJSON( self.templatePath('../data/libraries.json') );
-            var defaults = this.fs.readJSON( this.destinationPath('default-settings.json') );
+            var defaults = this.fs.readJSON( this.destinationPath('settings.json') );
             this.responses['libs'].forEach( function( lib ){
                 var version = ( self.responses[ "lib_version_"+lib ] !== undefined ) ?
                     self.responses[ "lib_version_"+lib ] :
@@ -461,13 +472,39 @@ module.exports = yeoman.generators.Base.extend({
 
             });
 
-            this.fs.writeJSON( this.destinationPath('default-settings.json'), defaults );
+            this.fs.writeJSON( this.destinationPath('settings.json'), defaults );
 
             //generate local settings file
             this.fs.copy(
                 this.templatePath('settings/local.json'),
                 this.destinationPath('local-settings.json')
             );
+
+        },
+
+        style: function(){
+            var self = this;
+            if ( self.responses.styleLanguage === "sass"){
+                this.fs.copy(
+                    this.templatePath('source/sass/default.sass'),
+                    this.destinationPath('source/sass/'+self.responses.projectName+'.sass')
+                );
+                this.fs.copy(
+                    this.templatePath('source/less/_variables.sass'),
+                    this.destinationPath('source/less/_variables.sass')
+                );
+            }
+            else{
+                this.fs.copy(
+                    this.templatePath('source/less/default.less'),
+                    this.destinationPath('source/less/'+self.responses.projectName+'.less')
+                );
+                this.fs.copy(
+                    this.templatePath('source/less/variables.less'),
+                    this.destinationPath('source/less/variables.less')
+                );
+            }
+
 
         }
     },

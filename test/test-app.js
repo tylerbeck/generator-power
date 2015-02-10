@@ -31,7 +31,7 @@ describe('test:app', function () {
             '.gitignore',
             '.editorconfig',
             '.jshintrc',
-            'default-settings.json',
+            'settings.json',
             'local-settings.json'
         ]);
     });

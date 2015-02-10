@@ -25,6 +25,18 @@ function getMapping( src, srcExt, dest, destExt ){
     return obj;
 }
 
+function getGlob( base, list, ext ){
+    return base + "(" + list.join("|") +")." + ext;
+}
+
+function getList( base, list, ext ){
+    var all = [];
+    list.forEach( function( item ){
+       val.push( path.join( base, list, ext ) );
+    });
+    return all
+}
+
 
 /**
  * configuration
@@ -68,8 +80,8 @@ module.exports = {
             expand: true,
             browsers: settings.style.browsers
         },
-        main: {
-            src: '<%= settings.build.styles %>/**/*.css'
+        all: {
+            src: getGlob( settings.build.styles, settings.style.files, 'css' )
         }
     },
 
@@ -84,9 +96,7 @@ module.exports = {
         },
         main: {
             files: {
-                '<%= settings.build.styles %>': [
-                    '<%= settings.build.styles %>/**/*.css'
-                ]
+                '<%= settings.build.styles %>': getList( settings.build.styles, settings.style.files, 'css' )
             }
         }
     },
@@ -112,10 +122,7 @@ module.exports = {
         /**
          * clean css from build directory
          */
-        //TODO: update this task, or create custom task to only remove styles that are in compiled
-        'css': [
-            '<%= settings.build.styles %>/*'
-        ]
+        'css': getList( settings.build.styles, settings.style.files, 'css' )
     },
 
     /**
@@ -125,7 +132,7 @@ module.exports = {
         'style-compile': {
             options:{
                 config:{
-                    property: "settings.styleLang",
+                    property: "settings.style.language",
                     value: "sass"
                 }
             },
@@ -140,21 +147,29 @@ module.exports = {
                 'less'
             ]
         },
-        'style-optimize':{
+        'style-cmq':{
             options:{
                 config:{
-                    property: "settings.environment",
-                    value: "prod"
+                    property: "settings.style.combine-media-queries",
+                    value: true
                 }
             },
             ifTrue: [
-                'autoprefixer',
-                'cmq',
+                'cmq'
+            ],
+            ifFalse: []
+        },
+        'style-optimize':{
+            options:{
+                config:{
+                    property: "settings.style.optimize",
+                    value: true
+                }
+            },
+            ifTrue: [
                 'cssmin'
             ],
-            ifFalse: [
-                'autoprefixer'
-            ]
+            ifFalse: []
         }
     },
 
@@ -164,9 +179,9 @@ module.exports = {
     watch: {
         style:{
             files: [ '<%= settings.source.less %>/**/*.less', '<%= settings.source.sass %>/**/*.scss'],
-            tasks: [ 'build-css' ],
+            tasks: [ 'build-style' ],
             options: {
-                spawn: true
+                spawn: false
             }
         }
     },
@@ -179,7 +194,7 @@ module.exports = {
         css: {
             options: {
                 title: 'Grunt Task Complete',
-                message: 'CSS compiled and optimized.'
+                message: 'Styles built.'
             }
         }
     }

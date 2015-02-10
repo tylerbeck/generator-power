@@ -1,4 +1,5 @@
 {
+    "label": "Custom Setup",
     "order": -999,
     "settings": {
         "build": {
@@ -9,7 +10,7 @@
             "images": "<%= buildRoot %>/<%= buildImages %>"
         },
 
-        "resources": {
+        "resource": {
             "root": "<%= resourceRoot %>",
             "fonts": "<%= resourceRoot %>/<%= resourceFonts %>",
             "images": "<%= resourceRoot %>/<%= resourceImages %>",
@@ -51,6 +52,7 @@
 
         "style": {
             "language": "<%= styleLanguage %>",
+            "combine-media-queries": true,
             "optimize": true,
             "browsers": [
                 "ie > 7",
@@ -58,16 +60,9 @@
                 "chrome > 9",
                 "safari > 5"
             ],
-            "files": []
-        },
-
-        "scripts": {
-            "debug": false,
-            "compress": true,
-            "copy": [],
-            "concat": [],
-            "require": {},
-            "dependencies": []
+            "files": [
+                "<%= projectName %>"
+            ]
         },
 
         "images": {
@@ -75,9 +70,37 @@
         },
 
         "fonts": {
-            "engine": "fontforge",
+            "engine": "node",
             "iconFontName": "IconFont",
-            "families": {}
+            "families": {
+                "FontFamilyOne": {
+                    "normal": {
+                        "200": "font-src/FontOne-Light.ttf",
+                        "400": "font-src/FontOne-Regular.ttf",
+                        "700": "font-src/FontOne-Bold.ttf"
+                    },
+                    "italic": {
+                        "200": "font-src/FontOne-LightItalic.ttf",
+                        "400": "font-src/FontOne-RegularItalic.ttf",
+                        "700": "font-src/FontOne-BoldItalic.ttf"
+                    }
+                },
+                "FontFamilyTwo": {
+                    "normal": {
+                        "400": "font-src/FontTwo-Regular.ttf"
+                    }
+                }
+            }
+        },
+
+        "scripts": {
+            "jshint": true,
+            "log": false,
+            "comments": "some",
+            "compress": true,
+            "copy": [],
+            "concat": []
         }
+
     }
 }

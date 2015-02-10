@@ -9,7 +9,7 @@
 /**
  * font configuration
  * fonts should be configured in *-settings.json
- * all paths are relative to settings.resources.fonts
+ * all paths are relative to settings.resource.fonts
  */
 var fonts = settings.fonts.families ;
 var grunt = require( 'grunt' );
@@ -21,7 +21,7 @@ var settings = require( '../settings' );
 for ( var family in fonts ){
     for ( var style in fonts[ family ] ){
         for ( var weight in fonts[ family ][ style ] ){
-            fonts[ family ][ style ][ weight ] = settings.resources.fonts+'/' + fonts[ family ][ style ][ weight ];
+            fonts[ family ][ style ][ weight ] = settings.resource.fonts+'/' + fonts[ family ][ style ][ weight ];
         }
     }
 }
@@ -29,12 +29,12 @@ for ( var family in fonts ){
 var iconFonts = {};
 iconFonts[ settings.fonts.iconFontName ] = {
     "normal": {
-        "400": "<%= settings.resources.fonts %>/<%= settings.fonts.iconFontName %>/<%= settings.fonts.iconFontName %>.ttf"
+        "400": "<%= settings.resource.fonts %>/<%= settings.fonts.iconFontName %>/<%= settings.fonts.iconFontName %>.ttf"
     }
 };
 
 function hasIconSVGTest(){
-    var list = grunt.file.expand( path.join( settings.resources.icons, '**/*.svg' ) );
+    var list = grunt.file.expand( path.join( settings.resource.icons, '**/*.svg' ) );
     grunt.log.writeln( list );
     return list.length > 0;
 }
@@ -79,9 +79,9 @@ module.exports = {
     webfont:{
         icons: {
             src: [
-                '<%= settings.resources.icons %>/*.svg'
+                '<%= settings.resource.icons %>/*.svg'
             ],
-            dest: '<%= settings.resources.fonts %>/<%= settings.fonts.iconFontName %>',
+            dest: '<%= settings.resource.fonts %>/<%= settings.fonts.iconFontName %>',
             destCss: '<%= settings.source.'+settings.styleLang+' %>/icons/',
             options: {
                 stylesheet: '<%= settings.styleLang %>',
@@ -162,7 +162,7 @@ module.exports = {
          * when font sources are updated regenerate embeddable fonts
          */
         fonts: {
-            files: [ '<%= settings.resources.fonts %>/**/*' ],
+            files: [ '<%= settings.resource.fonts %>/**/*' ],
             tasks: [ 'if:fontforge', 'if:embedfont', 'notify:fonts' ],
             options: {
                 spawn: true
@@ -173,7 +173,7 @@ module.exports = {
          * when font sources are updated regenerate embeddable fonts
          */
         icons: {
-            files: [ '<%= settings.resources.icons %>/**/*.svg' ],
+            files: [ '<%= settings.resource.icons %>/**/*.svg' ],
             tasks: [ 'if:fontforge', 'if:webfont', 'notify:icons' ],
             options: {
                 spawn: true

@@ -3,11 +3,12 @@
     "settings": {
 
         "style": {
-            "optimize": false
+            "optimize": true
         },
 
         "scripts": {
-            "debug": true,
+            "log": true,
+            "comments": "all",
             "compress": false
         }
 

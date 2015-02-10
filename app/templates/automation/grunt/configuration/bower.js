@@ -7,6 +7,8 @@
 "use strict";
 
 var settings = require( '../settings' );
+var path = require('path');
+
 
 /**
  * configuration
@@ -61,8 +63,8 @@ module.exports = {
             options: {
                 dest: '<%= settings.source.sass %>/<%= settings.dependencies.path %>',
                 extensions: settings.dependencies.extensions.sass,
-                map: settings.dependencies.map.less,
-                replace: settings.dependencies.replace.less
+                map: settings.dependencies.map.sass,
+                replace: settings.dependencies.replace.sass
             }
         },
         fonts: {
@@ -89,14 +91,16 @@ module.exports = {
     clean: {
         /**
          * removed copied bower dependencies
-         * add any mapped files here
          * <file-path-glob>
          */
         'bower-map': [
             '<%= settings.source.less %>/<%= settings.dependencies.path %>/*',
             '<%= settings.source.sass %>/<%= settings.dependencies.path %>/*',
             '<%= settings.source.scripts %>/<%= settings.dependencies.path %>/*',
+            '<%= settings.source.fonts %>/<%= settings.dependencies.path %>/*',
+            '<%= settings.source.images %>/<%= settings.dependencies.path %>/*'
         ],
+
         /**
          * cleans bower_components folder
          */
@@ -139,7 +143,7 @@ module.exports = {
             files: ['bower.json'],
             tasks: ['clean:bower-map','if:bower-map'],
             options: {
-                spawn: true
+                spawn: false
             }
         }
     },

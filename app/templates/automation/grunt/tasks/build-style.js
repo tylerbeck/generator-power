@@ -4,7 +4,9 @@ module.exports = function( grunt ) {
 
     grunt.registerTask( 'build-style', [
         'if:style-compile',
+        'if:style-cmq',
         'if:style-optimize',
+        'autoprefixer:all',
         'notify:css'
     ] );
 

@@ -25,10 +25,10 @@ module.exports = {
                    '<%= settings.source.'+settings.style.language+' %>',
                    '<%= settings.source.scripts %>',
                    '<%= settings.source.scripts %>',
-                   '<%= settings.resources.fonts %>',
-                   '<%= settings.resources.images %>',
-                   '<%= settings.resources.icons %>',
-                   '<%= settings.resources.sketch %>'
+                   '<%= settings.resource.fonts %>',
+                   '<%= settings.resource.images %>',
+                   '<%= settings.resource.icons %>',
+                   '<%= settings.resource.sketch %>'
                ]
            }
         }
@@ -38,7 +38,7 @@ module.exports = {
      * when bower.json or settings file changes clean and re-map vendor files
      */
     watch: {
-        bower:{
+        settings:{
             files: [
                 '*-settings.json',
                 'settings.json'
@@ -46,7 +46,7 @@ module.exports = {
             tasks: ['build'],
             options: {
                 reload: true,
-                spawn: true
+                spawn: false
             }
         }
     }

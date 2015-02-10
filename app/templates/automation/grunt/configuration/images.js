@@ -7,12 +7,45 @@
 "use strict";
 
 var settings = require( '../settings' );
+var path = require('path');
 
 //imagemin plugins
-var pngquant = require('imagemin-pngquant');
 var zopfli = require('imagemin-zopfli');
 var mozjpeg = require('imagemin-mozjpeg');
 
+
+
+/**
+ * dynamically build sketch configuration based on available files
+ */
+function buildSketchConfig(){
+
+    var config = {
+        options: {
+            type: 'slices',
+            overwrite: true
+        }
+    };
+
+    var files = grunt.file.expand( path.join( settings.resource.sketch, "**/*.sketch" ) );
+    var count = 0;
+    files.forEach( function( file ){
+        config['sketch-'+(count++)] = {
+            src: file,
+            dest: settings.resource.images
+        }
+    });
+}
+
+function getManagedImages(){
+    var files = grunt.file.expand( path.join( settings.resource.images, "**/*.(<%= settings.images.types %>)" ) );
+    for ( var i= 0,l=files.length; i<l; i++ ){
+        var file = files[i];
+        files[i] = file.replace( settings.resource.images, settings.build.images );
+    }
+
+    return files;
+}
 /**
  * configuration
  */
@@ -24,19 +57,10 @@ module.exports = {
      * http://bohemiancoding.com/sketch/tool/
      *
      * to prevent errors on systems without sketchtool, this
-     * plugin's loading is deferred using 'if' and 'sketch-export.  To execute a
-     * sketch export use: "sketch-export:[task]" eg sketch-export:icons
+     * task is not initially loaded.  To execute a
+     * sketch export use: "load-and-export-sketch"
      */
-    sketch_export:{
-        design:{
-            options: {
-                type: 'slices',
-                overwrite: true
-            },
-            src: '<%= settings.resources.sketch %>/design.sketch',
-            dest: '<%= settings.resources.images %>/'
-        }
-    },
+    sketch_export: buildSketchConfig(),
 
 
     /**
@@ -53,14 +77,13 @@ module.exports = {
                 ],
                 use: [
                     zopfli({ more: true }),
-                    pngquant({ quality: '80-95', speed: 3 }),
                     mozjpeg()
                 ]
             },
             files:[
                 {
                     expand: true,
-                    cwd: '<%= settings.resources.images %>',
+                    cwd: '<%= settings.resource.images %>',
                     src: ['**/*.{<%= settings.images.types %>}'],
                     dest: '<%= settings.build.images %>'
                 }
@@ -72,17 +95,14 @@ module.exports = {
      * clean configuration
      */
     clean: {
-        //TODO: update this task, or create custom task to only remove images that are in resources
-        images: [
-            '<%= settings.build.images %>/*'
-        ],
+        images: getManagedImages(),
         //TODO: update this task, or create custom task to only remove images that exported by sketch
         'sketch-exports': []
     },
 
 
     /**
-     * conditionally run sketch & minification tasks based on local environment
+     * conditionally run sketch tasks based on local environment
      */
     if: {
         'sketch': {
@@ -90,7 +110,7 @@ module.exports = {
                 executable: 'sketchtool'
             },
             ifTrue: [
-                'sketch-export:design',
+                'load-and-export-sketch',
                 'notify:sketch'
             ],
             ifFalse:[]
@@ -107,10 +127,11 @@ module.exports = {
          * when sketch file is updated export images
          */
         sketch: {
-            files: [ '<%= settings.resources.sketch %>/design.sketch' ],
+            files: [ '<%= settings.resource.sketch %>/**/*.sketch' ],
             tasks: [ 'if:sketch' ],
             options: {
-                spawn: true
+                spawn: false,
+                reload: true
             }
         },
 
@@ -118,10 +139,11 @@ module.exports = {
          * when images are added or updated, optimize images
          */
         images:{
-            files: [ '<%= settings.resources.images %>/**/*.{<%= settings.images.types %>}' ],
+            files: [ '<%= settings.resource.images %>/**/*.(<%= settings.images.types %>)' ],
             tasks: [ 'newer:imagemin' ],
             options: {
-                spawn: true
+                spawn: false,
+                reload:true
             }
         }
     },

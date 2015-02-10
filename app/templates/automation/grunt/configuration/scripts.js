@@ -7,17 +7,22 @@
 var settings = require( '../settings' );
 var path = require( 'path' );
 
-//build requirejs configuration
-var requireMain =  "almond";
-if ( !settings.scripts.require.useAlmond ){
-    requireMain = settings.scripts.require.name;
-}
+//determine which files to watch and clean based on settings
+var watchFiles = [ '<%= settings.source.scripts %>/**/*.js' ];
+var cleanFiles = [ '<%= settings.build.scripts %>/**/*.js' ];
 
-var requirePaths = {};
-if ( settings.scripts.require.exclude ){
-    settings.scripts.require.exclude.forEach( function( name ){
-        requirePaths[ name ] = "empty:";
-    });
+function expand( src, dest, map ){
+    var obj = {};
+    for ( var target in map ){
+        var parts = map[ target ];
+        var d = path.join(dest, target);
+        obj[ d ] = [];
+        parts.forEach( function( part ){
+           obj[ d].push( path.join( dest, part ) );
+        });
+    }
+
+    return obj;
 }
 
 //create function to check if obj is array and has values
@@ -31,23 +36,6 @@ function hasFilesTest( obj ){
         return false;
     };
 }
-
-
-//determine which files to watch and clean based on settings
-var watchFiles = [ '<%= settings.source.scripts %>/**' ];
-var cleanFiles = [ '<%= settings.build.scripts %>/**' ];
-var dependencies = [].concat( settings.scripts.dependencies );
-dependencies.forEach( function( dependency ){
-    var srcs = [].concat( dependency.src );
-    var cwd = dependency.cwd || "";
-    var dest = dependency.dest || "";
-    srcs.forEach( function( src ){
-        var watch = path.join( cwd, src );
-        var clean = path.join( dest, src );
-        watchFiles.concat( watch );
-        cleanFiles.concat( clean );
-    });
-});
 
 
 /**
@@ -70,15 +58,13 @@ module.exports = {
         }
     },
 
+    /**
+     * uglify
+     */
     uglify: {
         options: {
-            compress: settings.environment === 'dev' ? false : {
-                drop_console: true
-            },
-            mangle: {
-                except: settings.scripts.preserve
-            },
-            preserveComments: 'some'
+            compress: settings.scripts.compress,
+            preserveComments: settings.scripts.compress ? settings.scripts.comments : 'all'
         },
         copy:{
             files: [{
@@ -88,9 +74,33 @@ module.exports = {
                 dest: '<%= settings.build.scripts %>'
             }]
         },
-        concat:{
-            files: settings.scripts.concat
+        concat: {
+            files: expand(
+                settings.build.scripts,
+                settings.source.scripts,
+                settings.scripts.concat
+            )
         }
+    },
+
+    /**
+     * string-replace
+     */
+    'string-replace': {
+        console_log: {
+          files: [{
+              expand: true,
+              cwd: '<%= settings.build.scripts %>',
+              src: './**/*.js',
+              dest: './'
+          }],
+          options: {
+              replacements: [{
+                  pattern: /console.log(.*);/g,
+                  replacement: ""
+              }]
+          }
+      }
     },
 
     /**
@@ -98,44 +108,28 @@ module.exports = {
      */
     requirejs: {
 
+        modules: {
+
+        },
+
+        almond: {
+
+        },
+
         optimize:{
             options:{
                 baseUrl: '<%= settings.source.scripts %>',
                 mainConfigFile: '<%= settings.source.scripts %>/<%= settings.scripts.require.config %>',
                 paths: requirePaths,
-                optimize: settings.debug ? 'none' : 'uglify2',
+                optimize: settings.scripts.compress ? 'none' : 'uglify2',
                 out: '<%= settings.build.scripts %>/'+settings.scripts.require.out,
                 name: requireMain,
-                include: settings.scripts.require.name,
-                onBuildRead: function (moduleName, path, contents) {
-                    //return contents;
-                    return settings.debug ? contents : contents.replace(/console.log(.*);/g, '');
-                },
-                onBuildWrite: function (moduleName, path, contents) {
-                    // Add extra stufff;
-                    return contents;
-                }
-
+                include: settings.scripts.require.name
             }
 
         }
     },
 
-    copy: {
-        'requirejs-dev': {
-            //copy all scripts along with files specified in config
-            files: [{
-                expand: true,
-                cwd: '<%= settings.source.scripts %>',
-                src: '**/*.js',
-                dest: '<%= settings.build.scripts %>'
-            }].concat( settings.scripts.require.dependencies )
-        },
-
-        'dependencies': {
-            files: settings.scripts.dependencies
-        }
-    },
     /**
      * clean configuration
      */
@@ -151,7 +145,7 @@ module.exports = {
         'jshint': {
             options:{
                 config: {
-                    property: "settings.jshint",
+                    property: "settings.scripts.jshint",
                     value: false
                 }
             },
@@ -184,6 +178,18 @@ module.exports = {
 
             ]
         },
+        'scripts-log':{
+            options:{
+                config: {
+                    property: "settings.scripts.log",
+                    value: true
+                }
+            },
+            ifTrue: [],
+            ifFalse:[
+                'string-replace:console_log'
+            ]
+        },
         'scripts-require': {
             options:{
                 config: {
@@ -213,7 +219,8 @@ module.exports = {
             files: watchFiles,
             tasks: [ 'build-scripts' ],
             options: {
-                spawn: true
+                spawn: false,
+                reload: true
             }
         }
 

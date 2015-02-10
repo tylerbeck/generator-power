@@ -1,8 +1,8 @@
-#web-template
+#generator-front-end
 ============
 
 ##Overview
-The goal of this template is to create a consistent framework for front-end web and application development and to implement tools that facilitate best practices through the use of automation and templating.
+The goal of this yo generator is to create a consistent framework for front-end web and application development and to implement tools that facilitate best practices through the use of automation and templating.
 
 Common front-end processes have been automated using `grunt`, but the configuration of those taks has been streamlined and moved to a JSON settings file. The majority of projects can be configured via this JSON file without any changes to the underlying grunt task configurations.  Additionally these settings files can be overridden in order to provide environment specific settings variations.
 
@@ -17,11 +17,26 @@ Common front-end processes have been automated using `grunt`, but the configurat
  - RequireJS compilation; standard, or self-contained using AlmondJS
 
 
-##Setup
-Todo: create `yo generator` to initialize a new project
 
-##Basic Configuration
-Configuration files can be expressed as JSON files.  Attributes marked as required must be present somewhere in the settings inheritance. Files with higher `order` attribute values will override files with lower values.  Objects are merged recursively, Primitives and Arrays are overwritten.
+
+
+
+##Setup
+First install yo (requires node): `npm install -g yo`  
+Next install this generator: `npm install -g generator-front-end`
+
+To run the generator, `cd` to the desired directory and run `yo front-end`.
+A series of prompts will allow you to customize the installation.
+
+ 
+
+ 
+  
+
+##Advanced Configuration
+To configure a project manually or modify settings beyond what can be done via the yo generator process, one can use JSON Configuration files  to overwrite settings.json. Any file that matches `**/*-settings.json` will be recursively merged into the project settings.  This can be used to provide environment specific or developer specific variations. 
+
+Attributes marked as required must be present somewhere in the settings inheritance. Files with higher `order` attribute values will override files with lower values.  Objects are merged recursively, Primitives and Arrays are overwritten.
 
 *JSON settings file*
 ```
@@ -57,12 +72,12 @@ References to location of coded assets. All paths are relative to the directory 
 ###resource
 References to locations of binary, file and image assets. All paths are relative to the directory containing `"Gruntfile.js"`.   
 ```
-        "resources": {
-            "root": "resources",
-            "fonts": "resources/fonts",
-            "images": "resources/images",
-            "icons": "resources/icons",
-            "sketch": "resources/sketch"
+        "resource": {
+            "root": "resource",
+            "fonts": "resource/fonts",
+            "images": "resource/images",
+            "icons": "resource/icons",
+            "sketch": "resource/sketch"
         }
 ```
 | Attribute  | Description | required | inheritable |
@@ -196,10 +211,11 @@ Use replace to change values within external assets.  Replacements should be spe
 ```
 
 ###style
-The `style` attribute can be used to determine what and how source styles get compiled.
+The `style` attribute can be used to determine how source styles get compiled.
 ```
         "style": {
             "language": "<%= styleLanguage %>",
+            "combine-media-queries": true,
             "optimize": true,
             "browsers": [
                 "ie > 7",
@@ -216,7 +232,102 @@ The `style` attribute can be used to determine what and how source styles get co
 | Attribute  | Description | required | inheritable |
 |------------|-------------|----------|-------------|
 | language | `"less"` or `"sass"` | √ | √ |
-| optimize | Boolean flag indicating whether to compress and optimize css. If set to `true`, css output will be optimized with cmq and cssmin  | √  | √ |
+| combine-media-queries | Boolean flag indicating whether to combine media queries (mobile first ordering) using cmq.  | √  | √ |
+| optimize | Boolean flag indicating whether to compress and optimize css. If set to `true`, css output will be optimized with cssmin  | √  | √ |
 | browsers | a browserlist style (https://github.com/ai/browserslist) array of browsers to autoprefix | √ | √ |
 | files | an array of style source files to compile (extension omitted) | √ | √ |
+
+
+
+
+###images
+The `images` attribute can be used to determine the types of images to optimize and copy from the resource folder to the build folder.  
+```
+        "images": {
+            "types": "png,jpg,jpeg,gif,svg,ico"
+        }
+```
+
+| Attribute  | Description | required | inheritable |
+|------------|-------------|----------|-------------|
+| types | array of image extensions to compress | √ | √ |
+
+
+
+###fonts
+The `fonts` attribute can be used to generate web embeddable fonts and icon fonts. All font paths are relative to the `resource.fonts` path.
+```
+        "fonts": {
+            "engine": "node",
+            "iconFontName": "IconFont",
+            "families": {
+                "FontFamilyOne": {
+                    "normal": {
+                        "200": "FontOne-Light.ttf",
+                        "400": "FontOne-Regular.ttf",
+                        "700": "FontOne-Bold.ttf"
+                    },
+                    "italic": {
+                        "200": "FontOne-LightItalic.ttf",
+                        "400": "FontOne-RegularItalic.ttf",
+                        "700": "FontOne-BoldItalic.ttf"
+                    }
+                },
+                "FontFamilyTwo": {
+                    "normal": {
+                        "400": "font-src/FontTwo-Regular.ttf"
+                    }
+                }
+            }
+        }
+```
+
+| Attribute  | Description | required | inheritable |
+|------------|-------------|----------|-------------|
+| engine | `"fontforge"` or `"node"` | √ | √ |
+| iconFontName | Font name to use for generated icons | √ | √ |
+| families | map source ttfs to font-family names, styles, and weights.  The families attribute is required, but it can be left empty.| √ | √ |
+
+##### font family definition structure
+See https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight for weight mapping suggestions.
+```
+            "families": {
+            	// 0-n occurances (unique names).  
+            	//Any valid css font name, PascalCase is recomended
+                "FontFamilyName": {  
+                	//css font-weights               
+                	"normal": {
+                		"100": "path/to/font.ttf",
+                		"200": "path/to/font.ttf",
+                		"300": "path/to/font.ttf",
+                		"400": "path/to/font.ttf", //normal
+                		"500": "path/to/font.ttf",
+                		"600": "path/to/font.ttf",
+                		"700": "path/to/font.ttf", //bold
+                		"800": "path/to/font.ttf",
+                		"900": "path/to/font.ttf"
+                    },
+                    "italic": {
+						...
+                    }
+                    "oblique": {
+                        ...
+                    }
+                }
+                
+				...
+				
+            }
+```
+
+###scripts
+The `scripts` attribute can be used to specify scripts to copy, concatenate, or compile using requireJS
+
+
+
+
+
+
+
+
 

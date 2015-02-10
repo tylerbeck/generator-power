@@ -7,7 +7,7 @@ module.exports = function( grunt ) {
         'if:scripts-copy',
         'if:scripts-concat',
         'if:scripts-require',
-        'copy:dependencies',
+        'if:scripts-log',
         'notify:scripts'
     ] );
 };
