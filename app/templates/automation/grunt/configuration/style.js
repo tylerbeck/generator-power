@@ -26,16 +26,27 @@ function getMapping( src, srcExt, dest, destExt ){
 }
 
 function getGlob( base, list, ext ){
-    return base + "(" + list.join("|") +")." + ext;
+    return path.join( base , "{" + list.join("|") +"}." + ext );
 }
 
 function getList( base, list, ext ){
     var all = [];
     list.forEach( function( item ){
-       val.push( path.join( base, list, ext ) );
+        all.push( path.join( base, item+"."+ext ) );
     });
     return all
 }
+
+var autoprefixer = {
+    options: {
+        expand: true,
+        browsers: settings.style.browsers
+    }
+};
+
+settings.style.files.forEach( function( file ){
+    autoprefixer[ file ] = path.join( settings.build.styles , file+'.css' );
+});
 
 
 /**
@@ -75,15 +86,7 @@ module.exports = {
      * automatically adds prefixes based on the specified browsers
      * additional information can be found at: https://github.com/ai/autoprefixer#browsers
      */
-    autoprefixer: {
-        options: {
-            expand: true,
-            browsers: settings.style.browsers
-        },
-        all: {
-            src: getGlob( settings.build.styles, settings.style.files, 'css' )
-        }
-    },
+    autoprefixer: autoprefixer,
 
     /**
      * configuration for the combine-media-queries task

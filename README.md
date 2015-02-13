@@ -321,7 +321,7 @@ See https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight for weight mapp
 ```
 
 ###scripts
-The `scripts` attribute can be used to specify scripts to copy, concatenate, or compile using requireJS
+The `scripts` attribute can be used to specify scripts to copy, concatenate, or compile using requireJS with or without AlmondJS.
 
 
 

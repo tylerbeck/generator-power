@@ -11,10 +11,10 @@
  * fonts should be configured in *-settings.json
  * all paths are relative to settings.resource.fonts
  */
-var fonts = settings.fonts.families ;
 var grunt = require( 'grunt' );
 var path = require( 'path' );
 var settings = require( '../settings' );
+var fonts = settings.fonts.families || {} ;
 
 
 //update paths to use font resource path
@@ -35,7 +35,7 @@ iconFonts[ settings.fonts.iconFontName ] = {
 
 function hasIconSVGTest(){
     var list = grunt.file.expand( path.join( settings.resource.icons, '**/*.svg' ) );
-    grunt.log.writeln( list );
+    //grunt.log.writeln( list );
     return list.length > 0;
 }
 
@@ -55,10 +55,10 @@ module.exports = {
 
         options:{
             fontPath: '<%= settings.build.fonts %>',
-            stylePath: '<%= settings.source.'+settings.styleLang+' %>/fonts',
-            relPath: '<%= settings.css.fonts %>',
+            stylePath: '<%= settings.source.'+settings.style.language+' %>/fonts',
+            relPath: path.relative( settings.build.styles, settings.build.fonts ),
             reformatNames: false,
-            output: '<%= settings.styleLang %>',
+            output: '<%= settings.style.language %>',
             engine: '<%= settings.fonts.engine %>'
         },
 
@@ -82,9 +82,9 @@ module.exports = {
                 '<%= settings.resource.icons %>/*.svg'
             ],
             dest: '<%= settings.resource.fonts %>/<%= settings.fonts.iconFontName %>',
-            destCss: '<%= settings.source.'+settings.styleLang+' %>/icons/',
+            destCss: '<%= settings.source.'+settings.style.language+' %>/icons/',
             options: {
-                stylesheet: '<%= settings.styleLang %>',
+                stylesheet: '<%= settings.style.language %>',
                 font: '<%= settings.fonts.iconFontName %>',
                 styles: 'icon',
                 types: 'ttf',
@@ -104,8 +104,8 @@ module.exports = {
      */
     clean: {
         fonts: [
-            '<%= settings.source.'+settings.styleLang+' %>/fonts/*',
-            '<%= settings.source.'+settings.styleLang+' %>/icons/*'
+            '<%= settings.source.'+settings.style.language+' %>/fonts/*',
+            '<%= settings.source.'+settings.style.language+' %>/icons/*'
         ]
     },
 
@@ -113,23 +113,11 @@ module.exports = {
     /**
      * conditionally run set-font-engine based on local environment
      */
-     //TODO: update task once embedfont supports engine specification
     if: {
-        'fontforge': {
-            options:{
-                executable: 'fontforge'
-            },
-            ifTrue: [
-                'set-font-engine:fontforge'
-            ],
-            ifFalse:[
-                'set-font-engine:node'
-            ]
-        },
 
         'embedfont': {
             options:{
-                test: hasIconSVGTest()
+                test: hasIconSVGTest
             },
             ifTrue: [
                 'embedfont'
@@ -141,7 +129,7 @@ module.exports = {
 
         'webfont': {
             options:{
-                test: hasIconSVGTest()
+                test: hasIconSVGTest
             },
             ifTrue: [
                 'webfont'

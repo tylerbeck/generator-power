@@ -1,11 +1,12 @@
 {
     "label": "Custom Setup",
     "order": -999,
+    "path": "templates/custom/",
     "settings": {
         "build": {
             "root": "<%= buildRoot %>",
             "scripts": "<%= buildRoot %>/<%= buildScripts %>",
-            "css": "<%= buildRoot %>/<%= buildStyles %>",
+            "styles": "<%= buildRoot %>/<%= buildStyles %>",
             "fonts": "<%= buildRoot %>/<%= buildFonts %>",
             "images": "<%= buildRoot %>/<%= buildImages %>"
         },
@@ -72,25 +73,7 @@
         "fonts": {
             "engine": "node",
             "iconFontName": "IconFont",
-            "families": {
-                "FontFamilyOne": {
-                    "normal": {
-                        "200": "font-src/FontOne-Light.ttf",
-                        "400": "font-src/FontOne-Regular.ttf",
-                        "700": "font-src/FontOne-Bold.ttf"
-                    },
-                    "italic": {
-                        "200": "font-src/FontOne-LightItalic.ttf",
-                        "400": "font-src/FontOne-RegularItalic.ttf",
-                        "700": "font-src/FontOne-BoldItalic.ttf"
-                    }
-                },
-                "FontFamilyTwo": {
-                    "normal": {
-                        "400": "font-src/FontTwo-Regular.ttf"
-                    }
-                }
-            }
+            "families": {}
         },
 
         "scripts": {
@@ -99,7 +82,19 @@
             "comments": "some",
             "compress": true,
             "copy": [],
-            "concat": []
+            "concat": [],
+            "require": {
+                "config": "config.js",
+                "modules": [
+                    { "name": "main" }
+                ]
+            },
+            "almond": {
+                "config": "config.js",
+                "main": "main",
+                "out": "main.js"
+            }
+
         }
 
     }

@@ -1,0 +1,9 @@
+{
+    "custom": {
+        "name": "Custom Setup",
+        "path": "custom/",
+        "files": [
+            "<%= buildRoot %>/index.html"
+        ]
+    }
+}

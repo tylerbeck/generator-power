@@ -48,9 +48,9 @@ module.exports = {
      */
     jshint: {
         all: [
-            'gruntfile.js',
+            //'gruntfile.js',
             '<%= settings.source.scripts %>/**/*.js',
-            'automation/grunt/**/*.js',
+            //'automation/grunt/**/*.js',
             '!**/vendor/**/*.js' //don't jshint vendor scripts
         ],
         options: {
@@ -107,26 +107,24 @@ module.exports = {
      * require optimization configuration
      */
     requirejs: {
-
-        modules: {
-
+        options: {
+            baseUrl: '<%= settings.source.scripts %>',
+            mainConfigFile: '<%= settings.source.scripts %>/<%= settings.scripts.require.config %>',
+            optimize: settings.scripts.compress ? 'none' : 'uglify2'
         },
 
         almond: {
-
+            options:{
+                name: "almond",
+                include: "<%= settings.scripts.almond.main %>",
+                out: "<%= settings.build.scripts %>/<%= settings.scripts.require.out %>"
+            }
         },
 
-        optimize:{
-            options:{
-                baseUrl: '<%= settings.source.scripts %>',
-                mainConfigFile: '<%= settings.source.scripts %>/<%= settings.scripts.require.config %>',
-                paths: requirePaths,
-                optimize: settings.scripts.compress ? 'none' : 'uglify2',
-                out: '<%= settings.build.scripts %>/'+settings.scripts.require.out,
-                name: requireMain,
-                include: settings.scripts.require.name
+        modules: {
+            options: {
+                modules: settings.scripts.require ? settings.scripts.require.modules: []
             }
-
         }
     },
 
@@ -190,18 +188,28 @@ module.exports = {
                 'string-replace:console_log'
             ]
         },
+        'scripts-almond': {
+            options:{
+                config: {
+                    property: "settings.scripts.require.almond",
+                    value: undefined
+                }
+            },
+            ifTrue: [],
+            ifFalse:[
+                'requirejs:almond'
+            ]
+        },
         'scripts-require': {
             options:{
                 config: {
-                    property: "settings.environment",
-                    value: "prod"
+                    property: "settings.scripts.require.modules",
+                    value: undefined
                 }
             },
-            ifTrue: [
-                'requirejs:optimize'
-            ],
+            ifTrue: [],
             ifFalse:[
-                'requirejs:optimize' // always use require
+                'requirejs:modules'
             ]
         }
     },

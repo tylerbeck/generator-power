@@ -4,11 +4,11 @@ var grunt = require('grunt');
 var _ = require('lodash');
 
 //default configuration - this is the minimum required configuration.
-var defaults = require( './defaults.json' );
-var list = [ defaults ];
+var list = [ ];
 
 //load all settings.json files
-var files = grunt.file.expand( { cwd: "/" }, ["settings.json", "*-settings.json"] );
+var files = grunt.file.expand( ["settings.json", "*-settings.json"] );
+console.log('files: '+ files.join(", "));
 files.forEach( function(file){
     if ( grunt.file.exists( file ) ){
         var obj = grunt.file.readJSON( file );
@@ -29,10 +29,10 @@ list = list.sort( function( a, b ){
 });
 
 //merge settings objects
-var settings = {};
+var merged = {};
 list.forEach( function( item ){
-    settings = _.merge( settings, _.pick( item, 'settings' ) );
+    merged = _.merge( merged, _.pick( item, 'settings' ) );
 });
 
 //export combined settings
-module.exports = obj.settings;
+module.exports = merged.settings;

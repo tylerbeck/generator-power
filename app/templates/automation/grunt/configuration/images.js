@@ -8,6 +8,7 @@
 
 var settings = require( '../settings' );
 var path = require('path');
+var grunt = require('grunt');
 
 //imagemin plugins
 var zopfli = require('imagemin-zopfli');
@@ -46,6 +47,14 @@ function getManagedImages(){
 
     return files;
 }
+
+function hasSketchFiles(){
+    var list = grunt.file.expand( path.join( settings.resource.sketch, '**/*.sketch' ) );
+    //grunt.log.writeln( list );
+    return list.length > 0;
+
+}
+
 /**
  * configuration
  */
@@ -106,6 +115,15 @@ module.exports = {
      */
     if: {
         'sketch': {
+            options:{
+                test: hasSketchFiles
+            },
+            ifTrue: [
+                'if:sketch-usable'
+            ],
+            ifFalse:[]
+        },
+        'sketch-usable': {
             options:{
                 executable: 'sketchtool'
             },

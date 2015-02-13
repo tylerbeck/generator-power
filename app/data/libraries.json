@@ -28,6 +28,7 @@
     "q#1.x": {
         "shim": "q.js"
     },
+    "requirejs":{},
     "requirejs-text": {
         "shim": "text.js",
         "map":{

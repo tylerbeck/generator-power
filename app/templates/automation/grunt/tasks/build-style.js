@@ -6,7 +6,7 @@ module.exports = function( grunt ) {
         'if:style-compile',
         'if:style-cmq',
         'if:style-optimize',
-        'autoprefixer:all',
+        'autoprefixer',
         'notify:css'
     ] );
 

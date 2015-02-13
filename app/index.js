@@ -16,8 +16,8 @@ var _ = require('lodash');
 function validatePattern( required, regex, err ){
 
     return function( value ){
-        if (required && value == ""){
-            return "please enter a value";
+        if (required && value == ''){
+            return 'please enter a value';
         }
         if ( !regex.test( value ) ){
             return err;
@@ -32,7 +32,7 @@ function validatePattern( required, regex, err ){
  * @returns {String}
  */
 function trimSlashes( value ){
-    return value.replace(/^[\/]*/,"" ).replace(/[\/]*$/,"");
+    return value.replace(/^[\/]*/,'' ).replace(/[\/]*$/,'');
 }
 
 /**
@@ -95,18 +95,15 @@ function libSelected( name ){
  * @returns {*[]}
  */
 function getGeneralPrompts( self ){
-    var files = glob.sync( self.templatePath( 'settings/**/*.json' ) );
+
+    var types = self.fs.readJSON( self.templatePath('types.json') );
     var choices = [];
-    files.forEach( function( file ){
-        var settings = self.fs.readJSON( file );
-        if ( settings.label ){
-            var value = path.basename( file ).replace( path.extname( file ), "" );
-            choices.push({
-                name: settings.label,
-                value: value
-            });
-        }
-    });
+    for( var value in types ){
+        choices.push({
+            name: types[ value ].name,
+            value: value
+        });
+    }
 
     return [
         {
@@ -127,7 +124,7 @@ function getGeneralPrompts( self ){
             name: 'projectDesc',
             type: 'input',
             message: 'Project description',
-            default: ""
+            default: ''
         },
         {
             name: 'includeReadme',
@@ -140,8 +137,8 @@ function getGeneralPrompts( self ){
             type: 'list',
             message: 'Stylesheet language',
             choices: [
-                { name: "Less", value: "less" },
-                { name: "Sass", value: "sass" }
+                { name: 'Less', value: 'less' },
+                { name: 'Sass', value: 'sass' }
             ],
             default: 'less'
         }
@@ -286,7 +283,7 @@ function getDependencyPrompts( self ){
     for ( var pkg in libraries ){
         var parts = pkg.split('#');
         var name = parts[0];
-        var version = parts[1] || "x";
+        var version = parts[1] || '*';
 
         if ( self.versionMap[ name ] === undefined ){
             self.versionMap[ name ] = [];
@@ -302,7 +299,7 @@ function getDependencyPrompts( self ){
                 {
                     name: name+'_version',
                     type: 'list',
-                    message: "lib_version_"+name,
+                    message: 'Library Version '+name,
                     choices: self.versionMap[ name ],
                     when: libSelected( name )
                 }
@@ -334,6 +331,25 @@ function getDependencyPrompts( self ){
     return prompts.concat( versionPrompts );
 }
 
+function getScriptPrompts( self ){
+
+    return [
+        {
+            name: 'amd',
+            type: 'list',
+            message: 'AMD compilation method ',
+            choices: [
+                { name:'RequireJS', value:'require' },
+                { name:'AlmondJS', value:'almond' },
+                { name:'None', value:'none' }
+            ],
+            default: 'none',
+            when: responseIs( 'type', 'custom' )
+        }
+    ];
+
+}
+
 
 module.exports = yeoman.generators.Base.extend({
 
@@ -343,24 +359,32 @@ module.exports = yeoman.generators.Base.extend({
         var prompts = [].concat(
             getGeneralPrompts( self ),
             getPathPrompts( self ),
+            getScriptPrompts( self ),
             getDependencyPrompts( self )
         );
 
         this.prompt( prompts, function( responses ){
             //set defaults for required unprompted values
-            if ( responses['styleLanguage'] === "less" ){
-                responses['sourceSass'] = "sass";
+            if ( responses['styleLanguage'] === 'less' ){
+                responses['sourceSass'] = 'sass';
             }
             else{
-                responses['sourceLess'] = "less";
+                responses['sourceLess'] = 'less';
             }
 
             self.responses = responses;
+            var types = self.fs.readJSON( self.templatePath('types.json') );
+            var type = types[ self.responses['type'] ];
+
+            self.sourceRoot( self.templatePath( type.path ) );
+            //console.log( "template path: "+self.templatePath() );
+
             done();
         } );
     },
 
     writing: {
+
         project: function(){
 
             this.fs.copy(
@@ -371,6 +395,8 @@ module.exports = yeoman.generators.Base.extend({
                 this.templatePath('_Gruntfile.js'),
                 this.destinationPath('Gruntfile.js')
             );
+            //console.log( "responses:\n"+JSON.stringify( this.responses, undefined, '   ' ) );
+            //console.log( "package path: "+this.templatePath('_package.json') );
 
             this.fs.copyTpl(
                 this.templatePath('_package.json'),
@@ -413,10 +439,13 @@ module.exports = yeoman.generators.Base.extend({
             //update bower file with selected dependencies
             var bower = this.fs.readJSON( this.destinationPath('bower.json') );
             var self = this;
+            if  (self.responses['amd'] === 'require' && self.responses['libs'].indexOf('requirejs') < 0 ){
+                self.responses['libs'].push('requirejs');
+            }
             this.responses['libs'].forEach( function( lib ){
 
-                bower.dependencies[ lib ] = ( self.responses[ "lib_version_"+lib ] !== undefined ) ?
-                                              self.responses[ "lib_version_"+lib ] :
+                bower.dependencies[ lib ] = ( self.responses[ lib+'_version' ] !== undefined ) ?
+                                              self.responses[ lib+'_version' ] :
                                               self.versionMap[ lib ][0];
 
             });
@@ -425,7 +454,7 @@ module.exports = yeoman.generators.Base.extend({
 
         automation: function(){
             this.fs.copy(
-                this.templatePath( 'automation/' ),
+                this.templatePath( '../automation/' ),
                 this.destinationPath( 'automation/' )
             );
         },
@@ -434,23 +463,24 @@ module.exports = yeoman.generators.Base.extend({
             var self = this;
             //generate default settings file
             //copy and fill template values
-            console.log( "Settings template: "+ path.join( this.templatePath('settings'), this.responses.type+'.json') );
-            console.log( JSON.stringify( this.responses, undefined, "   " ) );
+            //console.log( 'Settings template: '+ this.templatePath('settings.json') );
+            //console.log( JSON.stringify( this.responses, undefined, '   ' ) );
 
             this.fs.copyTpl(
-                path.join( this.templatePath('settings'), this.responses.type+'.json' ),
+                this.templatePath('settings.json'),
                 this.destinationPath('settings.json'),
                 this.responses
             );
 
             //add dynamic values
-            var libraries = self.fs.readJSON( self.templatePath('../data/libraries.json') );
+            var libraries = self.fs.readJSON( self.templatePath('../../data/libraries.json') );
             var defaults = this.fs.readJSON( this.destinationPath('settings.json') );
+            defaults = _.pick( defaults, 'order','settings' );
             this.responses['libs'].forEach( function( lib ){
-                var version = ( self.responses[ "lib_version_"+lib ] !== undefined ) ?
-                    self.responses[ "lib_version_"+lib ] :
+                var version = ( self.responses[ 'lib_version_'+lib ] !== undefined ) ?
+                    self.responses[ 'lib_version_'+lib ] :
                     self.versionMap[ lib ][0];
-                var obj = libraries[ lib+"#"+version ] || libraries[ lib ] || {};
+                var obj = libraries[ lib+'#'+version ] || libraries[ lib ] || {};
 
                 //add shims
                 defaults.settings.dependencies.shim[ lib ] = obj.shim;
@@ -472,11 +502,36 @@ module.exports = yeoman.generators.Base.extend({
 
             });
 
+            //update settings based on amd type
+            switch( this.responses['amd'] ){
+                case 'require':
+                    break;
+                case 'almond':
+                    delete defaults.settings.scripts.require;
+                    break;
+                default:
+                    delete defaults.settings.scripts.almond;
+                    delete defaults.settings.scripts.require;
+                    break;
+            }
+
+            //update settings based on amd type
+            switch( this.responses['styleLanguage'] ){
+                case 'less':
+                    delete defaults.settings.source.sass;
+                    break;
+                case 'sass':
+                    delete defaults.settings.source.less;
+                    break;
+                default:
+                    break;
+            }
+
             this.fs.writeJSON( this.destinationPath('settings.json'), defaults );
 
             //generate local settings file
             this.fs.copy(
-                this.templatePath('settings/local.json'),
+                this.templatePath('local-settings.json'),
                 this.destinationPath('local-settings.json')
             );
 
@@ -484,7 +539,7 @@ module.exports = yeoman.generators.Base.extend({
 
         style: function(){
             var self = this;
-            if ( self.responses.styleLanguage === "sass"){
+            if ( self.responses.styleLanguage === 'sass'){
                 this.fs.copy(
                     this.templatePath('source/sass/default.sass'),
                     this.destinationPath('source/sass/'+self.responses.projectName+'.sass')
@@ -506,7 +561,58 @@ module.exports = yeoman.generators.Base.extend({
             }
 
 
+        },
+
+        scripts: function(){
+            if ( this.responses.amd !== 'none'){
+                this.fs.copyTpl(
+                    this.templatePath('source/scripts/config.js'),
+                    this.destinationPath('source/scripts/config.js'),
+                    this.responses
+                );
+                this.fs.copy(
+                    this.templatePath('source/scripts/main.js'),
+                    this.destinationPath('source/scripts/main.js')
+                );
+            }
+        },
+
+        directories: function(){
+            var obj = this.fs.readJSON( this.destinationPath('settings.json') );
+            var dir;
+            for ( dir in obj.settings.build ){
+                this.mkdir( this.destinationPath( obj.settings.build[ dir ] ) );
+            }
+            for ( dir in obj.settings.resource ){
+                this.mkdir( this.destinationPath( obj.settings.resource[ dir ] ) );
+            }
+            for ( dir in obj.settings.source ){
+                this.mkdir( this.destinationPath( obj.settings.source[ dir ] ) );
+            }
+        },
+
+        misc: function(){
+            var self = this;
+            var types = self.fs.readJSON( self.templatePath('../types.json') );
+            var type = types[ self.responses['type'] ];
+            //console.log( "Copying misc files:" );
+            type.files.forEach( function( tpl ){
+                //console.log( "  "+tpl );
+                var pattern = _.template( tpl )( self.responses );
+                //console.log( "    "+pattern );
+
+                glob.sync( pattern, { cwd: self.templatePath() } ).forEach( function( file ){
+                    //console.log( "      "+file );
+                    self.fs.copyTpl(
+                        self.templatePath( file ),
+                        self.destinationPath( file ),
+                        self.responses
+                    );
+                });
+            })
+
         }
+
     },
 
     install: function () {
