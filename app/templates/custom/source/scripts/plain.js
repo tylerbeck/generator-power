@@ -1,5 +1,3 @@
-define([],function(){
-
+(function(){
     alert( "Hello World!" );
-
-});
+})();

@@ -1,7 +1,20 @@
 {
-    "flexslider": {},
-    "jquery#2.x":{},
-    "jquery#1.x":{},
+    "almond": {},
+    "flexslider": {
+        "shim":[
+            "jquery.flexslider.js",
+            "flexslider.less",
+            "fonts/flexslider-icon.eot",
+            "fonts/flexslider-icon.woff",
+            "fonts/flexslider-icon.ttf",
+            "fonts/flexslider-icon.svg"
+        ],
+        "map": {
+            "fonts":{
+                "flexslider/fonts/": "/"
+            }
+        }
+    },
     "handlebars": {
         "shim": [
             "handlebars.js",
@@ -15,6 +28,8 @@
             }
         }
     },
+    "jquery#2.x":{},
+    "jquery#1.x":{},
     "normalize-css": {
         "map":{
             "less":{
@@ -29,19 +44,19 @@
         "shim": "q.js"
     },
     "requirejs":{},
-    "requirejs-text": {
-        "shim": "text.js",
-        "map":{
-            "scripts":{
-                "requirejs-text": "/requirejs-plugins/"
-            }
-        }
-    },
     "requirejs-plugins": {
         "map":{
             "scripts": {
                 "requirejs-plugins/src": "/requirejs-plugins/",
                 "requirejs-plugins/lib": "/requirejs-plugins/"
+            }
+        }
+    },
+    "requirejs-text": {
+        "shim": "text.js",
+        "map":{
+            "scripts":{
+                "requirejs-text": "/requirejs-plugins/"
             }
         }
     }

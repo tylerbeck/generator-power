@@ -66,7 +66,7 @@ module.exports = {
                 dumpLineNumbers: true
             },
             files: getMapping(
-                settings.source.less, 'less',
+                settings.source.styles, 'less',
                 settings.build.styles, 'css'
             )
         }
@@ -181,7 +181,7 @@ module.exports = {
      */
     watch: {
         style:{
-            files: [ '<%= settings.source.less %>/**/*.less', '<%= settings.source.sass %>/**/*.scss'],
+            files: [ '<%= settings.source.styles %>/**/*.<%= settings.style.language %>' ],
             tasks: [ 'build-style' ],
             options: {
                 spawn: false

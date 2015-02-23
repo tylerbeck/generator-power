@@ -7,10 +7,6 @@
 var settings = require( '../settings' );
 var path = require( 'path' );
 
-//determine which files to watch and clean based on settings
-var watchFiles = [ '<%= settings.source.scripts %>/**/*.js' ];
-var cleanFiles = [ '<%= settings.build.scripts %>/**/*.js' ];
-
 function expand( src, dest, map ){
     var obj = {};
     for ( var target in map ){
@@ -109,21 +105,22 @@ module.exports = {
     requirejs: {
         options: {
             baseUrl: '<%= settings.source.scripts %>',
-            mainConfigFile: '<%= settings.source.scripts %>/<%= settings.scripts.require.config %>',
             optimize: settings.scripts.compress ? 'none' : 'uglify2'
         },
 
         almond: {
             options:{
-                name: "almond",
+                name: "vendor/almond",
                 include: "<%= settings.scripts.almond.main %>",
-                out: "<%= settings.build.scripts %>/<%= settings.scripts.require.out %>"
+                mainConfigFile: '<%= settings.source.scripts %>/<%= settings.scripts.almond.config %>',
+                out: "<%= settings.build.scripts %>/<%= settings.scripts.almond.out %>"
             }
         },
 
         modules: {
             options: {
-                modules: settings.scripts.require ? settings.scripts.require.modules: []
+                mainConfigFile: '<%= settings.source.scripts %>/<%= settings.scripts.require.config %>',
+                modules: settings.scripts.require ? settings.scripts.require.modules : []
             }
         }
     },
@@ -132,7 +129,7 @@ module.exports = {
      * clean configuration
      */
     clean: {
-        scripts: cleanFiles
+        scripts: '<%= settings.build.scripts %>/**/*.js'
     },
 
 
@@ -191,26 +188,28 @@ module.exports = {
         'scripts-almond': {
             options:{
                 config: {
-                    property: "settings.scripts.require.almond",
-                    value: undefined
+                    property: "settings.scripts.almond",
+                    operand: "!=",
+                    value: false
                 }
             },
-            ifTrue: [],
-            ifFalse:[
+            ifTrue: [
                 'requirejs:almond'
-            ]
+            ],
+            ifFalse:[]
         },
         'scripts-require': {
             options:{
                 config: {
-                    property: "settings.scripts.require.modules",
-                    value: undefined
+                    property: "settings.scripts.require",
+                    operand: "!=",
+                    value: false
                 }
             },
-            ifTrue: [],
-            ifFalse:[
+            ifTrue: [
                 'requirejs:modules'
-            ]
+            ],
+            ifFalse:[]
         }
     },
 
@@ -224,7 +223,7 @@ module.exports = {
          * when scripts are updated, build-scripts
          */
         scripts: {
-            files: watchFiles,
+            files: [ '<%= settings.source.scripts %>/**' ],
             tasks: [ 'build-scripts' ],
             options: {
                 spawn: false,

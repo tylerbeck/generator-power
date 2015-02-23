@@ -4,6 +4,15 @@
         "path": "custom/",
         "files": [
             "<%= buildRoot %>/index.html"
-        ]
+        ],
+        "values": {
+            "libs": [
+                "normalize-css"
+            ],
+            "vendor": "vendor"
+        },
+        "prompts": []
+
+
     }
 }

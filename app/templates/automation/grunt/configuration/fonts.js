@@ -150,7 +150,7 @@ module.exports = {
          * when font sources are updated regenerate embeddable fonts
          */
         fonts: {
-            files: [ '<%= settings.resource.fonts %>/**/*' ],
+            files: [ '<%= settings.resource.fonts %>/**' ],
             tasks: [ 'if:fontforge', 'if:embedfont', 'notify:fonts' ],
             options: {
                 spawn: true
@@ -161,7 +161,7 @@ module.exports = {
          * when font sources are updated regenerate embeddable fonts
          */
         icons: {
-            files: [ '<%= settings.resource.icons %>/**/*.svg' ],
+            files: [ '<%= settings.resource.icons %>/**' ],
             tasks: [ 'if:fontforge', 'if:webfont', 'notify:icons' ],
             options: {
                 spawn: true

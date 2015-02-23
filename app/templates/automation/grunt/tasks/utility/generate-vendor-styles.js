@@ -10,12 +10,12 @@ module.exports = function( grunt ) {
 
         var lines = [ "/* THIS FILE IS GENERATED */", "" ];
 
-        var files = grunt.file.expand( { cwd: settings.source.less }, ["vendor/**/*.less"] );
+        var files = grunt.file.expand( { cwd: settings.source.styles }, ["vendor/**/*.less"] );
         files.forEach( function( file ){
             lines.push( "@import '"+file+"';");
         });
 
-        grunt.file.write( path.join( settings.source.less, "vendor.less" ) , lines.join("\n") );
+        grunt.file.write( path.join( settings.source.styles, "vendor.less" ) , lines.join("\n") );
 
     });
 
@@ -23,13 +23,13 @@ module.exports = function( grunt ) {
 
         var lines = [ "/* THIS FILE IS GENERATED */", "" ];
 
-        var files = grunt.file.expand( { cwd: settings.source.sass }, ["vendor/**/*.scss"] );
+        var files = grunt.file.expand( { cwd: settings.source.styles }, ["vendor/**/*.scss"] );
         files.forEach( function( file ){
             var name = file.replace( ".scss","" );
             lines.push( "@import '"+name+"';");
         });
 
-        grunt.file.write( path.join( settings.source.sass, "_vendor.scss" ), lines.join("\n") );
+        grunt.file.write( path.join( settings.source.styles, "_vendor.scss" ), lines.join("\n") );
 
     });
 

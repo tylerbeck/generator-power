@@ -90,11 +90,11 @@ function libSelected( name ){
 }
 
 /**
- * generate general prompts
+ * generate type prompts
  * @param self
  * @returns {*[]}
  */
-function getGeneralPrompts( self ){
+function getTypePrompts( self ){
 
     var types = self.fs.readJSON( self.templatePath('types.json') );
     var choices = [];
@@ -112,7 +112,18 @@ function getGeneralPrompts( self ){
             message: 'Project type',
             choices: choices,
             default: 'custom'
-        },
+        }
+    ];
+}
+
+/**
+ * generate general prompts
+ * @param self
+ * @returns {*[]}
+ */
+function getGeneralPrompts( self ){
+
+    return [
         {
             name: 'projectName',
             type: 'input',
@@ -157,112 +168,91 @@ function getPathPrompts( self ){
             type: 'input',
             message: 'Build root path',
             default: 'public',
-            filter: trimSlashes,
-            when: responseIs( 'type', 'custom' )
+            filter: trimSlashes
         },
         {
             name: 'buildScripts',
             type: 'input',
             message: 'Build scripts folder',
             default: 'assets/scripts',
-            filter: trimSlashes,
-            when: responseIs( 'type', 'custom' )
+            filter: trimSlashes
         },
         {
             name: 'buildStyles',
             type: 'input',
             message: 'Build styles folder',
             default: 'assets/css',
-            filter: trimSlashes,
-            when: responseIs( 'type', 'custom' )
+            filter: trimSlashes
         },
         {
             name: 'buildFonts',
             type: 'input',
             message: 'Build fonts folder',
             default: 'assets/fonts',
-            filter: trimSlashes,
-            when: responseIs( 'type', 'custom' )
+            filter: trimSlashes
         },
         {
             name: 'buildImages',
             type: 'input',
             message: 'Build image folder',
             default: 'assets/images',
-            filter: trimSlashes,
-            when: responseIs( 'type', 'custom' )
+            filter: trimSlashes
         },
         {
             name: 'resourceRoot',
             type: 'input',
             message: 'Resource root path',
             default: 'resources',
-            filter: trimSlashes,
-            when: responseIs( 'type', 'custom' )
+            filter: trimSlashes
         },
         {
             name: 'resourceFonts',
             type: 'input',
             message: 'Resource font folder',
             default: 'fonts',
-            filter: trimSlashes,
-            when: responseIs( 'type', 'custom' )
+            filter: trimSlashes
         },
         {
             name: 'resourceImages',
             type: 'input',
             message: 'Resource image folder',
             default: 'images',
-            filter: trimSlashes,
-            when: responseIs( 'type', 'custom' )
+            filter: trimSlashes
         },
         {
             name: 'resourceIcons',
             type: 'input',
             message: 'Resource icon folder',
             default: 'icons',
-            filter: trimSlashes,
-            when: responseIs( 'type', 'custom' )
+            filter: trimSlashes
         },
         {
             name: 'resourceSketch',
             type: 'input',
             message: 'Resource sketch folder',
             default: 'sketch',
-            filter: trimSlashes,
-            when: responseIs( 'type', 'custom' )
+            filter: trimSlashes
         },
         {
             name: 'sourceRoot',
             type: 'input',
             message: 'Source root path',
             default: 'source',
-            filter: trimSlashes,
-            when: responseIs( 'type', 'custom' )
+            filter: trimSlashes
         },
         {
             name: 'sourceScripts',
             type: 'input',
             message: 'Source scripts folder',
             default: 'scripts',
-            filter: trimSlashes,
-            when: responseIs( 'type', 'custom' )
+            filter: trimSlashes
         },
         {
-            name: 'sourceLess',
+            name: 'sourceStyles',
             type: 'input',
-            message: 'Source less folder',
-            default: 'less',
-            filter: trimSlashes,
-            when: responsesAre( ['type','styleLanguage'], ['custom','less'] )
-        },
-        {
-            name: 'sourceSass',
-            type: 'input',
-            message: 'Source sass folder',
-            default: 'sass',
-            filter: trimSlashes,
-            when: responsesAre( ['type','styleLanguage'], ['custom','sass'] )
+            message: 'Source style folder',
+            default: 'styles',
+            filter: trimSlashes
         }
     ];
 
@@ -313,17 +303,14 @@ function getDependencyPrompts( self ){
             type: 'input',
             message: 'Vendor library directory',
             default: 'vendor',
-            filter: trimSlashes,
-            when: responseIs( 'type', 'custom' )
+            filter: trimSlashes
         },
         {
             name: 'libs',
             type: 'checkbox',
             message: 'Included Libraries',
             choices: choices,
-            default: [
-                'normalize-css'
-            ]
+            default: []
         }
     ];
 
@@ -331,6 +318,11 @@ function getDependencyPrompts( self ){
     return prompts.concat( versionPrompts );
 }
 
+/**
+ * generate script prompts
+ * @param self
+ * @returns {*|Array.<*>}
+ */
 function getScriptPrompts( self ){
 
     return [
@@ -343,8 +335,7 @@ function getScriptPrompts( self ){
                 { name:'AlmondJS', value:'almond' },
                 { name:'None', value:'none' }
             ],
-            default: 'none',
-            when: responseIs( 'type', 'custom' )
+            default: 'none'
         }
     ];
 
@@ -356,31 +347,56 @@ module.exports = yeoman.generators.Base.extend({
     prompting: function(){
         var done = this.async();
         var self = this;
-        var prompts = [].concat(
-            getGeneralPrompts( self ),
-            getPathPrompts( self ),
-            getScriptPrompts( self ),
-            getDependencyPrompts( self )
-        );
-
-        this.prompt( prompts, function( responses ){
-            //set defaults for required unprompted values
-            if ( responses['styleLanguage'] === 'less' ){
-                responses['sourceSass'] = 'sass';
-            }
-            else{
-                responses['sourceLess'] = 'less';
-            }
-
-            self.responses = responses;
+        self.responses = {};
+        self.prompt( getTypePrompts( self ), function( typeResponse ){
             var types = self.fs.readJSON( self.templatePath('types.json') );
-            var type = types[ self.responses['type'] ];
+            var type = types[ typeResponse['type'] ];
+            var prompts = [].concat(
+                    (type.prompts || []),
+                    getGeneralPrompts( self ),
+                    getPathPrompts( self ),
+                    getScriptPrompts( self ),
+                    getDependencyPrompts( self )
+                ).filter( function( prompt ){
+                    var include = false;
 
-            self.sourceRoot( self.templatePath( type.path ) );
-            //console.log( "template path: "+self.templatePath() );
+                    switch (prompt.name){
+                        case 'libs':
+                            //set default libs to value
+                            prompt.default = type.values[ prompt.name ] || [];
+                            include = true;
+                            break;
+                        default:
+                            //only show prompt if not set
+                            include = ( type.values[ prompt.name ] === undefined );
+                            if (!include){
+                                self.responses[ prompt.name ] = type.values[ prompt.name ];
+                            }
+                            break;
 
-            done();
-        } );
+                    }
+                    console.log("include "+prompt.name+": "+include);
+
+                    return include;
+                });
+
+            self.prompt( prompts, function( responses ){
+                //combine responses with preset values
+                self.responses.type = typeResponse.type;
+                _.merge( self.responses, responses );
+
+                self.sourceRoot( self.templatePath( type.path ) );
+                if ( self.responses['amd'] === 'almond' ){
+                    if ( self.responses.libs.indexOf( 'almond' ) <= 0 ){
+                        self.responses.libs.push('almond');
+                    }
+                }
+
+                done();
+
+            } );
+        });
+
     },
 
     writing: {
@@ -505,13 +521,15 @@ module.exports = yeoman.generators.Base.extend({
             //update settings based on amd type
             switch( this.responses['amd'] ){
                 case 'require':
+                    defaults.settings.scripts.almond = false;
                     break;
                 case 'almond':
-                    delete defaults.settings.scripts.require;
+                    defaults.settings.scripts.require = false;
                     break;
                 default:
-                    delete defaults.settings.scripts.almond;
-                    delete defaults.settings.scripts.require;
+                    defaults.settings.scripts.copy = [ "**/*.js" ];//copy all scripts by default
+                    defaults.settings.scripts.almond = false;
+                    defaults.settings.scripts.require = false;
                     break;
             }
 
@@ -537,44 +555,82 @@ module.exports = yeoman.generators.Base.extend({
 
         },
 
-        style: function(){
+        styles: function(){
             var self = this;
-            if ( self.responses.styleLanguage === 'sass'){
-                this.fs.copy(
-                    this.templatePath('source/sass/default.sass'),
-                    this.destinationPath('source/sass/'+self.responses.projectName+'.sass')
-                );
-                this.fs.copy(
-                    this.templatePath('source/less/_variables.sass'),
-                    this.destinationPath('source/less/_variables.sass')
-                );
-            }
-            else{
-                this.fs.copy(
-                    this.templatePath('source/less/default.less'),
-                    this.destinationPath('source/less/'+self.responses.projectName+'.less')
-                );
-                this.fs.copy(
-                    this.templatePath('source/less/variables.less'),
-                    this.destinationPath('source/less/variables.less')
-                );
-            }
+            this.fs.copy(
+                this.templatePath('source/less'),
+                this.destinationPath( path.join(
+                        self.responses.sourceRoot,
+                        self.responses.sourceStyles
+                    )
+                )
+            );
 
+            this.fs.move(
+                this.destinationPath( path.join(
+                        self.responses.sourceRoot,
+                        self.responses.sourceStyles,
+                        'default.'+self.responses.styleLanguage
+                    )
+                ),
+                this.destinationPath( path.join(
+                        self.responses.sourceRoot,
+                        self.responses.sourceStyles,
+                        self.responses.projectName+'.'+self.responses.styleLanguage
+                    )
+                )
+
+            );
 
         },
 
         scripts: function(){
-            if ( this.responses.amd !== 'none'){
-                this.fs.copyTpl(
-                    this.templatePath('source/scripts/config.js'),
-                    this.destinationPath('source/scripts/config.js'),
-                    this.responses
-                );
-                this.fs.copy(
-                    this.templatePath('source/scripts/main.js'),
-                    this.destinationPath('source/scripts/main.js')
-                );
+            switch ( this.responses.amd ){
+                case 'almond':
+                    this.fs.copyTpl(
+                        this.templatePath('source/scripts/config.js'),
+                        this.destinationPath('source/scripts/config.js'),
+                        this.responses
+                    );
+                    this.fs.copy(
+                        this.templatePath('source/scripts/main.js'),
+                        this.destinationPath('source/scripts/main.js')
+                    );
+
+                    this.responses['scripts'] = '<script type="text/javascript" src="'+
+                                                this.responses.buildScripts+
+                                                '/main.js"></script>\n';
+                    break;
+
+                case 'require':
+                    this.fs.copyTpl(
+                        this.templatePath('source/scripts/config.js'),
+                        this.destinationPath('source/scripts/config.js'),
+                        this.responses
+                    );
+                    this.fs.copy(
+                        this.templatePath('source/scripts/main.js'),
+                        this.destinationPath('source/scripts/main.js')
+                    );
+                    this.responses['scripts'] = '<script type="text/javascript" src="/'+
+                                                this.responses.vendorPath+'/'+
+                                                'require.js" data-main="/'+
+                                                this.responses.buildScripts+'/main"></script>\n';
+                    break;
+
+                case 'none':
+                    this.fs.copy(
+                        this.templatePath('source/scripts/plain.js'),
+                        this.destinationPath('source/scripts/main.js')
+                    );
+                    this.responses['scripts'] = '<script type="text/javascript" src="'+
+                                                this.responses.buildScripts+
+                                                '/main.js"></script>\n';
+                    break;
             }
+
+
+
         },
 
         directories: function(){
@@ -616,8 +672,16 @@ module.exports = yeoman.generators.Base.extend({
     },
 
     install: function () {
+        var self = this;
         this.installDependencies({
-            skipInstall: this.options['skip-install']
+            skipInstall: this.options['skip-install'],
+            callback: function(){
+                console.log('running grunt build');
+                self.spawnCommand( 'grunt', ['build'] )
+                    .on('close',function(){
+                        console.log('grunt build complete');
+                    } );
+            }
         });
     }
 

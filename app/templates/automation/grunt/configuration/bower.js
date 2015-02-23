@@ -53,7 +53,7 @@ module.exports = {
         },
         less: {
             options: {
-                dest: '<%= settings.source.less %>/<%= settings.dependencies.path %>',
+                dest: '<%= settings.source.styles %>/<%= settings.dependencies.path %>',
                 extensions: settings.dependencies.extensions.less,
                 map: settings.dependencies.map.less,
                 replace: settings.dependencies.replace.less
@@ -61,7 +61,7 @@ module.exports = {
         },
         sass: {
             options: {
-                dest: '<%= settings.source.sass %>/<%= settings.dependencies.path %>',
+                dest: '<%= settings.source.styles %>/<%= settings.dependencies.path %>',
                 extensions: settings.dependencies.extensions.sass,
                 map: settings.dependencies.map.sass,
                 replace: settings.dependencies.replace.sass

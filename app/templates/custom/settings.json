@@ -22,8 +22,7 @@
         "source": {
             "root": "<%= sourceRoot %>",
             "scripts": "<%= sourceRoot %>/<%= sourceScripts %>",
-            "less": "<%= sourceRoot %>/<%= sourceLess %>",
-            "sass": "<%= sourceRoot %>/<%= sourceSass %>"
+            "styles": "<%= sourceRoot %>/<%= sourceStyles %>"
         },
 
         "dependencies": {

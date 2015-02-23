@@ -145,7 +145,7 @@ module.exports = {
          * when sketch file is updated export images
          */
         sketch: {
-            files: [ '<%= settings.resource.sketch %>/**/*.sketch' ],
+            files: [ '<%= settings.resource.sketch %>/**' ],
             tasks: [ 'if:sketch' ],
             options: {
                 spawn: false,
@@ -157,11 +157,11 @@ module.exports = {
          * when images are added or updated, optimize images
          */
         images:{
-            files: [ '<%= settings.resource.images %>/**/*.(<%= settings.images.types %>)' ],
+            files: [ '<%= settings.resource.images %>/**' ],
             tasks: [ 'newer:imagemin' ],
             options: {
                 spawn: false,
-                reload:true
+                reload: true
             }
         }
     },

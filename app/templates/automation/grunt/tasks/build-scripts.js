@@ -6,6 +6,7 @@ module.exports = function( grunt ) {
         'if:jshint',
         'if:scripts-copy',
         'if:scripts-concat',
+        'if:scripts-almond',
         'if:scripts-require',
         'if:scripts-log',
         'notify:scripts'

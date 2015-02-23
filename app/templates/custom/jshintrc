@@ -11,5 +11,5 @@
     "eqnull": true,
     "node": true,
     "browser": true,
-    "predef": [ "define", "require", "module" ]
+    "predef": [ "define", "require", "module", "requirejs", "alert", "console" ]
 }

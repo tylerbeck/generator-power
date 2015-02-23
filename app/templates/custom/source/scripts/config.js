@@ -1,3 +1,5 @@
+/*jslint browser: true*/
+/*global requirejs:false */
 requirejs.config( {
     "baseUrl": "<%= buildScripts %>",
     "paths": {},
