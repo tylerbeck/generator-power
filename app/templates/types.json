@@ -1,10 +1,19 @@
 {
     "custom": {
-        "name": "Custom Setup",
-        "path": "custom/",
-        "files": [
-            "<%= buildRoot %>/index.html"
-        ],
+        "name": "Default Setup",
+        "path": "default/",
+        "files": {
+            "Gruntfile.js": "_Gruntfile.js",
+            "package.json": "_package.json",
+            "bower.json": "_bower.json",
+            ".editorconfig": "editorconfig",
+            ".gitignore": "gitignore",
+            ".jshintrc": "jshintrc",
+            "README.md": "README.md",
+            "settings.json": "settings.json",
+            "local-settings.json": "local-settings.json",
+            "<%= buildRoot %>/index.html":"public/index.html"
+        },
         "values": {
             "libs": [
                 "normalize-css"
