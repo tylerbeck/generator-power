@@ -138,12 +138,6 @@ function getGeneralPrompts( self ){
             default: ''
         },
         {
-            name: 'includeReadme',
-            type: 'confirm',
-            message: 'Generate README',
-            default: true
-        },
-        {
             name: 'styleLanguage',
             type: 'list',
             message: 'Stylesheet language',
@@ -336,6 +330,7 @@ function getScriptPrompts( self ){
                 { name:'None', value:'none' }
             ],
             default: 'none'
+
         }
     ];
 
@@ -375,7 +370,7 @@ module.exports = yeoman.generators.Base.extend({
                             break;
 
                     }
-                    console.log("include "+prompt.name+": "+include);
+                    //console.log("include "+prompt.name+": "+include);
 
                     return include;
                 });
@@ -384,6 +379,28 @@ module.exports = yeoman.generators.Base.extend({
                 //combine responses with preset values
                 self.responses.type = typeResponse.type;
                 _.merge( self.responses, responses );
+
+                switch ( self.responses.amd ){
+                    case 'almond':
+                        self.responses['scripts'] = '<script type="text/javascript" src="'+
+                                                    self.responses.buildScripts+
+                                                    '/main.js"></script>\n';
+                        break;
+
+                    case 'require':
+                        self.responses['scripts'] = '<script type="text/javascript" src="/'+
+                                                    self.responses.vendorPath+'/'+
+                                                    'require.js" data-main="/'+
+                                                    self.responses.buildScripts+'/main"></script>\n';
+                        break;
+
+                    case 'none':
+                        self.responses['scripts'] = '<script type="text/javascript" src="'+
+                                                    self.responses.buildScripts+
+                                                    '/main.js"></script>\n';
+                        break;
+                }
+
 
                 self.sourceRoot( self.templatePath( type.path ) );
                 if ( self.responses['amd'] === 'almond' ){
@@ -401,58 +418,41 @@ module.exports = yeoman.generators.Base.extend({
 
     writing: {
 
-        project: function(){
+        files: function(){
+            var self = this;
+            var types = self.fs.readJSON( self.templatePath('../types.json') );
+            var type = types[ self.responses['type'] ];
+            //console.log( "Copying files:" );
+            for ( var destination in type.files ){
+                //console.log("---"+destination);
+                if (type.files.hasOwnProperty(destination) ){
+                    var src = type.files[ destination ];
+                    var dest = _.template( destination )( self.responses );
+                    glob.sync( src, { cwd: self.templatePath() } ).forEach( function( file ){
+                        //console.log( "      "+src );
+                        self.fs.copyTpl(
+                            self.templatePath( src ),
+                            self.destinationPath( dest ),
+                            self.responses
+                        );
+                    });
+                }
+            }
+            //console.log( "   complete." );
 
-            this.fs.copy(
-                this.templatePath('gitignore'),
-                this.destinationPath('.gitignore')
-            );
-            this.fs.copy(
-                this.templatePath('_Gruntfile.js'),
-                this.destinationPath('Gruntfile.js')
-            );
-            //console.log( "responses:\n"+JSON.stringify( this.responses, undefined, '   ' ) );
-            //console.log( "package path: "+this.templatePath('_package.json') );
 
-            this.fs.copyTpl(
-                this.templatePath('_package.json'),
-                this.destinationPath('package.json'),
-                this.responses
-            );
-
-            this.fs.copy(
-                this.templatePath('editorconfig'),
-                this.destinationPath('.editorconfig')
-            );
-            this.fs.copy(
-                this.templatePath('jshintrc'),
-                this.destinationPath('.jshintrc')
-            );
         },
 
-        readme: function(){
-
-            if ( this.responses.includeReadme ){
-
-                this.fs.copyTpl(
-                    this.templatePath('README.md'),
-                    this.destinationPath('README.md'),
-                    this.responses
-                );
-
-            }
-
+        automation: function(){
+            this.fs.copy(
+                this.templatePath( '../automation/' ),
+                this.destinationPath( 'automation/' )
+            );
         },
 
         bower: function(){
 
-            this.fs.copyTpl(
-                this.templatePath('_bower.json'),
-                this.destinationPath('bower.json'),
-                this.responses
-            );
-
-            //update bower file with selected dependencies
+             //update bower file with selected dependencies
             var bower = this.fs.readJSON( this.destinationPath('bower.json') );
             var self = this;
             if  (self.responses['amd'] === 'require' && self.responses['libs'].indexOf('requirejs') < 0 ){
@@ -468,26 +468,9 @@ module.exports = yeoman.generators.Base.extend({
             this.fs.writeJSON( this.destinationPath('bower.json'), bower );
         },
 
-        automation: function(){
-            this.fs.copy(
-                this.templatePath( '../automation/' ),
-                this.destinationPath( 'automation/' )
-            );
-        },
-
         settings: function(){
             var self = this;
             //generate default settings file
-            //copy and fill template values
-            //console.log( 'Settings template: '+ this.templatePath('settings.json') );
-            //console.log( JSON.stringify( this.responses, undefined, '   ' ) );
-
-            this.fs.copyTpl(
-                this.templatePath('settings.json'),
-                this.destinationPath('settings.json'),
-                this.responses
-            );
-
             //add dynamic values
             var libraries = self.fs.readJSON( self.templatePath('../../data/libraries.json') );
             var defaults = this.fs.readJSON( this.destinationPath('settings.json') );
@@ -547,85 +530,65 @@ module.exports = yeoman.generators.Base.extend({
 
             this.fs.writeJSON( this.destinationPath('settings.json'), defaults );
 
-            //generate local settings file
-            this.fs.copy(
-                this.templatePath('local-settings.json'),
-                this.destinationPath('local-settings.json')
-            );
-
         },
 
         styles: function(){
             var self = this;
+
+            var destBase = path.join(
+                this.responses['sourceRoot'],
+                this.responses['sourceStyles']
+            );
+
             this.fs.copy(
                 this.templatePath('source/less'),
-                this.destinationPath( path.join(
-                        self.responses.sourceRoot,
-                        self.responses.sourceStyles
-                    )
-                )
+                this.destinationPath( path.join( destBase ) )
             );
 
             this.fs.move(
-                this.destinationPath( path.join(
-                        self.responses.sourceRoot,
-                        self.responses.sourceStyles,
-                        'default.'+self.responses.styleLanguage
-                    )
-                ),
-                this.destinationPath( path.join(
-                        self.responses.sourceRoot,
-                        self.responses.sourceStyles,
-                        self.responses.projectName+'.'+self.responses.styleLanguage
-                    )
-                )
-
+                this.destinationPath( path.join( destBase, 'default.'+self.responses.styleLanguage ) ),
+                this.destinationPath( path.join( destBase, self.responses.projectName+'.'+self.responses.styleLanguage ) )
             );
 
         },
 
         scripts: function(){
+
+            var destBase = path.join(
+                this.responses['sourceRoot'],
+                this.responses['sourceScripts']
+            );
+
             switch ( this.responses.amd ){
                 case 'almond':
                     this.fs.copyTpl(
                         this.templatePath('source/scripts/config.js'),
-                        this.destinationPath('source/scripts/config.js'),
+                        this.destinationPath( path.join( destBase, 'config.js') ),
                         this.responses
                     );
                     this.fs.copy(
                         this.templatePath('source/scripts/main.js'),
-                        this.destinationPath('source/scripts/main.js')
+                        this.destinationPath( path.join( destBase, 'main.js') )
                     );
-
-                    this.responses['scripts'] = '<script type="text/javascript" src="'+
-                                                this.responses.buildScripts+
-                                                '/main.js"></script>\n';
                     break;
 
                 case 'require':
                     this.fs.copyTpl(
                         this.templatePath('source/scripts/config.js'),
-                        this.destinationPath('source/scripts/config.js'),
+                        this.destinationPath( path.join( destBase, 'config.js') ),
                         this.responses
                     );
                     this.fs.copy(
                         this.templatePath('source/scripts/main.js'),
-                        this.destinationPath('source/scripts/main.js')
+                        this.destinationPath( path.join( destBase, 'main.js') )
                     );
-                    this.responses['scripts'] = '<script type="text/javascript" src="/'+
-                                                this.responses.vendorPath+'/'+
-                                                'require.js" data-main="/'+
-                                                this.responses.buildScripts+'/main"></script>\n';
                     break;
 
                 case 'none':
                     this.fs.copy(
-                        this.templatePath('source/scripts/plain.js'),
-                        this.destinationPath('source/scripts/main.js')
+                        this.templatePath('source/scripts/default.js'),
+                        this.destinationPath( path.join( destBase, 'main.js') )
                     );
-                    this.responses['scripts'] = '<script type="text/javascript" src="'+
-                                                this.responses.buildScripts+
-                                                '/main.js"></script>\n';
                     break;
             }
 
@@ -645,29 +608,8 @@ module.exports = yeoman.generators.Base.extend({
             for ( dir in obj.settings.source ){
                 this.mkdir( this.destinationPath( obj.settings.source[ dir ] ) );
             }
-        },
-
-        misc: function(){
-            var self = this;
-            var types = self.fs.readJSON( self.templatePath('../types.json') );
-            var type = types[ self.responses['type'] ];
-            //console.log( "Copying misc files:" );
-            type.files.forEach( function( tpl ){
-                //console.log( "  "+tpl );
-                var pattern = _.template( tpl )( self.responses );
-                //console.log( "    "+pattern );
-
-                glob.sync( pattern, { cwd: self.templatePath() } ).forEach( function( file ){
-                    //console.log( "      "+file );
-                    self.fs.copyTpl(
-                        self.templatePath( file ),
-                        self.destinationPath( file ),
-                        self.responses
-                    );
-                });
-            })
-
         }
+
 
     },
 

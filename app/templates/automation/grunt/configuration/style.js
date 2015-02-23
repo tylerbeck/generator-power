@@ -45,7 +45,7 @@ var autoprefixer = {
 };
 
 settings.style.files.forEach( function( file ){
-    autoprefixer[ file ] = path.join( settings.build.styles , file+'.css' );
+    autoprefixer[ file ] = {src: path.join( settings.build.styles , file+'.css' ) };
 });
 
 
