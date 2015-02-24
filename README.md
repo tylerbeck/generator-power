@@ -7,6 +7,7 @@ The goal of this yo generator is to create a consistent framework for front-end 
 Common front-end processes have been automated using `grunt`, but the configuration of those taks has been streamlined and moved to a JSON settings file. The majority of projects can be configured via this JSON file without any changes to the underlying grunt task configurations.  Additionally these settings files can be overridden in order to provide environment specific settings variations.
 
 ###features
+ - Capable of scaffolding multiple predefined or customized templates
  - Dependency management
  - Stylesheet compilation (less or sass), optimization, and minification
  - Image asset export using Sketch/Sketchtool
@@ -18,15 +19,14 @@ Common front-end processes have been automated using `grunt`, but the configurat
 
 
 
-
-
-
 ##Setup
+This project is intended to be forked and customized.  Once forked, additional template types can be added and additional bower dependencies can be configured.
+
 First install yo (requires node): `npm install -g yo`  
 Next install this generator: `npm install -g generator-front-end`
 
-To run the generator, `cd` to the desired directory and run `yo front-end`.
-A series of prompts will allow you to customize the installation.
+To run the generator, `cd` to an empty/uninitialized project directory and run `yo front-end`.
+A series of prompts will allow you to select and customize the installation.
 
  
 
@@ -322,9 +322,67 @@ See https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight for weight mapp
 
 ###scripts
 The `scripts` attribute can be used to specify scripts to copy, concatenate, or compile using requireJS with or without AlmondJS.
+```
+    "scripts": {
+      "jshint": true,
+      "log": false,
+      "comments": "some",
+      "compress": true,
+      "copy": [
+        "**/*.js"
+      ],
+      "concat": [],
+      "require": false,
+      "almond": false
+    }
+
+```
+
+
+| Attribute  | Description | required | inheritable |
+|------------|-------------|----------|-------------|
+| jshint | Boolean flag to enable or disable jshinting | √ | √ |
+| log | Boolean flag to enable or disable calls to `console.log` | √ | √ |
+| comments | String that indicates how to deal with comments when `compress` is true; 'some','all','none' | √ | √ |
+| compress | Boolean flag to enable or disable script compression/uglification | √ | √ |
+| copy | Array of file globbing patterns or file mapping objects to optimize and copy to the build folder | √ | √ |
+| concat | Array of file mapping objects to concatenate, optimize and copy to the build folder | √ | √ |
+| require | require configuration object or false if not using requirejs| √ | √ | 
+| almond | almond configuration object or false if not using almond| √ | √ | 
+
+####scripts.require
+```
+            "require": {
+                "config": "config.js",
+                "modules": [
+                    { "name": "main" }
+                ]
+            }
+
+```
+
+| Attribute  | Description | required | inheritable |
+|------------|-------------|----------|-------------|
+| config | Path (relative to script source) to require config | √ | √ |
+| modules | Require module list (see https://github.com/jrburke/r.js/blob/master/build/example.build.js line 351 for additional deatails ) | √ | √ |
 
 
 
+####scripts.almond
+```
+            "almond": {
+                "config": "config.js",
+                "main": "main",
+                "out": "main.js"
+            }
+
+```
+
+| Attribute  | Description | required | inheritable |
+|------------|-------------|----------|-------------|
+| config | Path (relative to script source) to require config | √ | √ |
+| main | The main require module to include | √ | √ |
+| out | The output path for the almond build  | √ | √ |
 
 
 
