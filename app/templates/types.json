@@ -1,5 +1,5 @@
 {
-    "custom": {
+    "default": {
         "name": "Default Setup",
         "path": "default/",
         "files": {
@@ -18,10 +18,44 @@
             "libs": [
                 "normalize-css"
             ],
-            "vendor": "vendor"
+            "vendor": "vendor",
+            "buildRoot": "public",
+            "buildScripts": "public/assets/scripts",
+            "buildStyles": "public/assets/css",
+            "buildFonts": "public/assets/fonts",
+            "buildImages": "public/assets/images",
+            "resourceRoot": "resources",
+            "resourceFonts": "resources/fonts",
+            "resourceImages": "resources/images",
+            "resourceIcons": "resources/icons",
+            "resourceSketch": "resources/sketch",
+            "sourceRoot": "source",
+            "sourceScripts": "source/scripts",
+            "sourceStyles": "source/styles"
         },
         "prompts": []
 
 
+    },
+    "custom": {
+        "name": "Custom Setup",
+        "path": "default/",
+        "files": {
+            "Gruntfile.js": "_Gruntfile.js",
+            "package.json": "_package.json",
+            "bower.json": "_bower.json",
+            ".editorconfig": "editorconfig",
+            ".gitignore": "gitignore",
+            ".jshintrc": "jshintrc",
+            "README.md": "README.md",
+            "settings.json": "settings.json",
+            "local-settings.json": "local-settings.json",
+            "<%= buildRoot %>/index.html":"public/index.html"
+        },
+        "values": {
+            "libs": [
+            ]
+        },
+        "prompts": []
     }
 }

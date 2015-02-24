@@ -22,17 +22,25 @@ Common front-end processes have been automated using `grunt`, but the configurat
 ##Setup
 This project is intended to be forked and customized.  Once forked, additional template types can be added and additional bower dependencies can be configured.
 
+
 First install yo (requires node): `npm install -g yo`  
-Next install this generator: `npm install -g generator-front-end`
+
+If you want to use the generator as is, just install it: `npm install -g generator-front-end`
+
+If you'd like to modify and customize template types and installation options, 
+<a href="https://github.com/tylerbeck/generator-front-end/fork">Fork this repository</a> then from a cloned folder run npm link to make it available for development and local use.
 
 To run the generator, `cd` to an empty/uninitialized project directory and run `yo front-end`.
 A series of prompts will allow you to select and customize the installation.
 
  
+##Adding Templates
+todo
 
- 
+##Adding Dependencies
+todo
+
   
-
 ##Project Configuration
 To configure a project manually or modify settings beyond what can be done via the yo generator process, one can use JSON Configuration files  to overwrite settings.json. Any file that matches `**/*-settings.json` will be recursively merged into the project settings.  This can be used to provide environment specific or developer specific variations. 
 

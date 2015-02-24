@@ -110,8 +110,7 @@ function getTypePrompts( self ){
             name: 'type',
             type: 'list',
             message: 'Project type',
-            choices: choices,
-            default: 'custom'
+            choices: choices
         }
     ];
 }
