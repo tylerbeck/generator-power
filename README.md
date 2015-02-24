@@ -4,7 +4,7 @@
 ##Overview
 The goal of this yo generator is to create a consistent framework for front-end web and application development and to implement tools that facilitate best practices through the use of automation and templating.
 
-Common front-end processes have been automated using `grunt`, but the configuration of those taks has been streamlined and moved to a JSON settings file. The majority of projects can be configured via this JSON file without any changes to the underlying grunt task configurations.  Additionally these settings files can be overridden in order to provide environment specific settings variations.
+Common front-end processes have been automated using `grunt`, but the configuration of those tasks has been streamlined and moved to a JSON settings file. The majority of projects can be configured via this JSON file without any changes to the underlying grunt task configurations.  Additionally these settings files can be overridden in order to provide environment specific settings variations.
 
 ###features
  - Capable of scaffolding multiple predefined or customized templates
