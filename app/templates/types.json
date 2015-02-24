@@ -20,18 +20,18 @@
             ],
             "vendor": "vendor",
             "buildRoot": "public",
-            "buildScripts": "public/assets/scripts",
-            "buildStyles": "public/assets/css",
-            "buildFonts": "public/assets/fonts",
-            "buildImages": "public/assets/images",
+            "buildScripts": "assets/scripts",
+            "buildStyles": "assets/css",
+            "buildFonts": "assets/fonts",
+            "buildImages": "assets/images",
             "resourceRoot": "resources",
-            "resourceFonts": "resources/fonts",
-            "resourceImages": "resources/images",
-            "resourceIcons": "resources/icons",
-            "resourceSketch": "resources/sketch",
+            "resourceFonts": "fonts",
+            "resourceImages": "images",
+            "resourceIcons": "icons",
+            "resourceSketch": "sketch",
             "sourceRoot": "source",
-            "sourceScripts": "source/scripts",
-            "sourceStyles": "source/styles"
+            "sourceScripts": "scripts",
+            "sourceStyles": "styles"
         },
         "prompts": []
 

@@ -1,7 +1,5 @@
 {
-    "label": "Custom Setup",
     "order": -999,
-    "path": "templates/custom/",
     "settings": {
         "build": {
             "root": "<%= buildRoot %>",
