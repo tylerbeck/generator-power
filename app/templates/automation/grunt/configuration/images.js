@@ -24,7 +24,8 @@ function buildSketchConfig(){
     var config = {
         options: {
             type: 'slices',
-            overwrite: true
+            overwrite: true,
+            saveForWeb: true
         }
     };
 
@@ -36,6 +37,8 @@ function buildSketchConfig(){
             dest: settings.resource.images
         }
     });
+
+    return config;
 }
 
 function getManagedImages(){
@@ -86,7 +89,7 @@ module.exports = {
                 ],
                 use: [
                     zopfli({ more: true }),
-                    mozjpeg()
+                    mozjpeg({quality: '65-85'})
                 ]
             },
             files:[
@@ -148,7 +151,7 @@ module.exports = {
             files: [ '<%= settings.resource.sketch %>/**' ],
             tasks: [ 'if:sketch' ],
             options: {
-                spawn: false,
+                spawn: true,
                 reload: true
             }
         },
@@ -161,7 +164,7 @@ module.exports = {
             tasks: [ 'newer:imagemin' ],
             options: {
                 spawn: false,
-                reload: true
+                reload: false
             }
         }
     },

@@ -1,4 +1,4 @@
-/***********************************************************************
+ /***********************************************************************
  * Grunt Scaffolding Configuration
  * Author: Copyright 2012-2015, Tyler Beck
  * License: MIT
@@ -33,6 +33,26 @@ module.exports = {
            }
         }
     },
+
+    bump: {
+        options: {
+            files: ['package.json', 'bower.json'],
+            updateConfigs: [],
+            commit: true,
+            commitMessage: 'Release v%VERSION%',
+            commitFiles: ['package.json'],
+            createTag: true,
+            tagName: 'v%VERSION%',
+            tagMessage: 'Version %VERSION%',
+            push: true,
+            pushTo: 'upstream',
+            gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d',
+            globalReplace: false,
+            prereleaseName: false,
+            regExp: false
+        }
+    },
+
 
     /**
      * when bower.json or settings file changes clean and re-map vendor files

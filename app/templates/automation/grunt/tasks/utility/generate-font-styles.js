@@ -9,7 +9,7 @@ module.exports = function( grunt ) {
 
         var lines = [ "/* THIS FILE IS GENERATED */", "" ];
 
-        var files = grunt.file.expand( { cwd: settings.source.styles }, ["fonts/**/*.less"] );
+        var files = grunt.file.expand( { cwd: settings.source.styles }, ["fonts/**/*.less", "icons/**/*.less"] );
         files.forEach( function( file ){
             lines.push( "@import '"+file+"';");
         });
@@ -22,7 +22,7 @@ module.exports = function( grunt ) {
 
         var lines = [ "/* THIS FILE IS GENERATED */", "" ];
 
-        var files = grunt.file.expand( { cwd: settings.source.styles }, ["fonts/**/*.scss"] );
+        var files = grunt.file.expand( { cwd: settings.source.styles }, ["fonts/**/*.scss", "icons/**/*.scss"] );
         files.forEach( function( file ){
             var name = file.replace( ".scss","" );
             lines.push( "@import '"+name+"';");

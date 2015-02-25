@@ -227,7 +227,7 @@ module.exports = {
             tasks: [ 'build-scripts' ],
             options: {
                 spawn: false,
-                reload: true
+                reload: false
             }
         }
 

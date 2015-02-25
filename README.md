@@ -42,7 +42,7 @@ todo
 
   
 ##Project Configuration
-To configure a project manually or modify settings beyond what can be done via the yo generator process, one can use JSON Configuration files  to overwrite settings.json. Any file that matches `**/*-settings.json` will be recursively merged into the project settings.  This can be used to provide environment specific or developer specific variations. 
+To configure a project manually or modify settings beyond what can be done via the yo generator process one can use JSON Configuration files. Any file that matches `**/*-settings.json` will be recursively merged into the project settings.  This can be used to provide environment specific or developer specific variations to the project's configuration. 
 
 Attributes marked as required must be present somewhere in the settings inheritance. Files with higher `order` attribute values will override files with lower values.  Objects are merged recursively, Primitives and Arrays are overwritten.
 

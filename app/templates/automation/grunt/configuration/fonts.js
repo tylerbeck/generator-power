@@ -55,7 +55,7 @@ module.exports = {
 
         options:{
             fontPath: '<%= settings.build.fonts %>',
-            stylePath: '<%= settings.source.'+settings.style.language+' %>/fonts',
+            stylePath: '<%= settings.source.styles %>/fonts',
             relPath: path.relative( settings.build.styles, settings.build.fonts ),
             reformatNames: false,
             output: '<%= settings.style.language %>',
@@ -82,7 +82,7 @@ module.exports = {
                 '<%= settings.resource.icons %>/*.svg'
             ],
             dest: '<%= settings.resource.fonts %>/<%= settings.fonts.iconFontName %>',
-            destCss: '<%= settings.source.'+settings.style.language+' %>/icons/',
+            destCss: '<%= settings.source.styles %>/icons/',
             options: {
                 stylesheet: '<%= settings.style.language %>',
                 font: '<%= settings.fonts.iconFontName %>',
@@ -90,7 +90,7 @@ module.exports = {
                 types: 'ttf',
                 hashes: false,
                 syntax: 'bootstrap',
-                relativeFontPath: '<%= settings.css.fonts %>',
+                relativeFontPath: path.relative( settings.build.styles, settings.build.fonts ),
                 htmlDemo: settings.environment !== 'prod',
                 destHtml: '<%= settings.build.fonts %>',
                 engine: '<%= settings.fonts.engine %>'
@@ -98,8 +98,26 @@ module.exports = {
         }
     },
 
+    'string-replace': {
+        'font-demo': {
+            files: {
+                '<%= settings.build.fonts %>/': '<%= settings.build.fonts %>/**/*.html'
+            },
+            options: {
+                replacements: [
+                    // place files inline example
+                    {
+                        pattern: '../../../resources/fonts/',
+                        replacement: ''
+                    }
+                ]
+            }
+        }
+    },
 
-    /**
+
+
+/**
      * clean configuration
      */
     clean: {
@@ -132,7 +150,8 @@ module.exports = {
                 test: hasIconSVGTest
             },
             ifTrue: [
-                'webfont'
+                'webfont',
+                'string-replace:font-demo'
             ],
             ifFalse:[
 
@@ -151,7 +170,7 @@ module.exports = {
          */
         fonts: {
             files: [ '<%= settings.resource.fonts %>/**' ],
-            tasks: [ 'if:fontforge', 'if:embedfont', 'notify:fonts' ],
+            tasks: [ 'if:embedfont', 'notify:fonts' ],
             options: {
                 spawn: true
             }
@@ -162,7 +181,7 @@ module.exports = {
          */
         icons: {
             files: [ '<%= settings.resource.icons %>/**' ],
-            tasks: [ 'if:fontforge', 'if:webfont', 'notify:icons' ],
+            tasks: [ 'if:webfont', 'notify:icons' ],
             options: {
                 spawn: true
             }

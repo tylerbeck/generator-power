@@ -336,292 +336,325 @@ function getScriptPrompts( self ){
 }
 
 
+/**
+ * execute prompts
+ */
+function prompt( self, done ){
+    self.responses = {};
+    self.prompt( getTypePrompts( self ), function( typeResponse ) {
+        var types = self.fs.readJSON( self.templatePath( 'types.json' ) );
+        var type = types[typeResponse['type']];
+        var prompts = [].concat(
+            (type.prompts || []),
+            getGeneralPrompts( self ),
+            getPathPrompts( self ),
+            getScriptPrompts( self ),
+            getDependencyPrompts( self )
+        ).filter( function( prompt ) {
+                var include = false;
+
+                switch ( prompt.name ) {
+                    case 'libs':
+                        //set default libs to value
+                        prompt.default = type.values[prompt.name] || [];
+                        include = true;
+                        break;
+                    default:
+                        //only show prompt if not set
+                        include = ( type.values[prompt.name] === undefined );
+                        if ( !include ) {
+                            self.responses[prompt.name] = type.values[prompt.name];
+                        }
+                        break;
+
+                }
+                //console.log("include "+prompt.name+": "+include);
+
+                return include;
+            } );
+
+        self.prompt( prompts, function( responses ) {
+            //combine responses with preset values
+            self.responses.type = typeResponse.type;
+            _.merge( self.responses, responses );
+
+            switch ( self.responses.amd ) {
+                case 'almond':
+                    self.responses['scripts'] = '<script type="text/javascript" src="' +
+                    self.responses.buildScripts +
+                    '/main.js"></script>\n';
+                    break;
+
+                case 'require':
+                    self.responses['scripts'] = '<script type="text/javascript" src="/' +
+                    self.responses.vendorPath + '/' +
+                    'require.js" data-main="/' +
+                    self.responses.buildScripts + '/main"></script>\n';
+                    break;
+
+                case 'none':
+                    self.responses['scripts'] = '<script type="text/javascript" src="' +
+                    self.responses.buildScripts +
+                    '/main.js"></script>\n';
+                    break;
+            }
+
+
+            self.sourceRoot( self.templatePath( type.path ) );
+            if ( self.responses['amd'] === 'almond' ) {
+                if ( self.responses.libs.indexOf( 'almond' ) <= 0 ) {
+                    self.responses.libs.push( 'almond' );
+                }
+            }
+
+            done();
+
+        } );
+    } );
+}
+
+/**
+ * writing methods
+ */
+var write = {
+
+    files: function(){
+        var types = this.fs.readJSON( this.templatePath('../types.json') );
+        var type = types[ this.responses['type'] ];
+        var self = this;
+        //console.log( "Copying files:" );
+        for ( var destination in type.files ){
+            //console.log("---"+destination);
+            if (type.files.hasOwnProperty(destination) ){
+                var src = type.files[ destination ];
+                var dest = _.template( destination )( this.responses );
+                glob.sync( src, { cwd: self.templatePath(), nodir: true } ).forEach( function( file ){
+                    //console.log( "      "+file+" -> "+dest );
+                    self.fs.copyTpl(
+                        self.templatePath( file ),
+                        self.destinationPath( dest ),
+                        self.responses
+                    );
+                });
+            }
+        }
+    },
+
+    automation: function(){
+        //use glob to avoid overwrite errors on directories
+        var templateBase = this.templatePath( this.options['update-automation'] ? 'automation' : '../automation/' );
+        var self = this;
+        glob.sync( '**/*', { cwd: templateBase, nodir: true } ).forEach( function( file ){
+            console.log( "      ../automation/"+file );
+            self.fs.copy(
+                path.join( templateBase, file ),
+                path.join( self.destinationPath( 'automation' ), file )
+            );
+        });
+
+    },
+
+    bower: function(){
+
+        //update bower file with selected dependencies
+        var bower = this.fs.readJSON( this.destinationPath('bower.json') );
+        if  (this.responses['amd'] === 'require' && this.responses['libs'].indexOf('requirejs') < 0 ){
+            this.responses['libs'].push('requirejs');
+        }
+        var self = this;
+        this.responses['libs'].forEach( function( lib ){
+
+            bower.dependencies[ lib ] = ( self.responses[ lib+'_version' ] !== undefined ) ?
+                self.responses[ lib+'_version' ] :
+                self.versionMap[ lib ][0];
+
+        });
+        this.fs.writeJSON( this.destinationPath('bower.json'), bower );
+    },
+
+    settings: function(){
+        //generate default settings file
+        //add dynamic values
+        var libraries = this.fs.readJSON( this.templatePath('../../data/libraries.json') );
+        var defaults = this.fs.readJSON( this.destinationPath('settings.json') );
+        defaults = _.pick( defaults, 'order','settings' );
+        var self = this;
+        this.responses['libs'].forEach( function( lib ){
+            var version = ( self.responses[ 'lib_version_'+lib ] !== undefined ) ?
+                self.responses[ 'lib_version_'+lib ] :
+                self.versionMap[ lib ][0];
+            var obj = libraries[ lib+'#'+version ] || libraries[ lib ] || {};
+
+            //add shims
+            defaults.settings.dependencies.shim[ lib ] = obj.shim;
+
+            //merge mappings
+            _.merge(
+                defaults.settings.dependencies.map,
+                obj.map
+            );
+
+            if ( obj.replace ){
+                for (var type in obj.replace ){
+                    if ( !defaults.settings.dependencies.replace[ type ] ){
+                        defaults.settings.dependencies.replace[ type ] = {};
+                    }
+                    defaults.settings.dependencies.replace[ type ][ lib ] = obj.replace[ type ];
+                }
+            }
+
+        });
+
+        //update settings based on amd type
+        switch( this.responses['amd'] ){
+            case 'require':
+                defaults.settings.scripts.almond = false;
+                break;
+            case 'almond':
+                defaults.settings.scripts.require = false;
+                break;
+            default:
+                defaults.settings.scripts.copy = [ "**/*.js" ];//copy all scripts by default
+                defaults.settings.scripts.almond = false;
+                defaults.settings.scripts.require = false;
+                break;
+        }
+
+        //update settings based on amd type
+        switch( this.responses['styleLanguage'] ){
+            case 'less':
+                delete defaults.settings.source.sass;
+                break;
+            case 'sass':
+                delete defaults.settings.source.less;
+                break;
+            default:
+                break;
+        }
+
+        this.fs.writeJSON( this.destinationPath('settings.json'), defaults );
+
+    },
+
+    styles: function(){
+
+        var destBase = path.join(
+            this.responses['sourceRoot'],
+            this.responses['sourceStyles']
+        );
+
+        this.fs.copy(
+            this.templatePath('source/less'),
+            this.destinationPath( path.join( destBase ) )
+        );
+
+        this.fs.move(
+            this.destinationPath( path.join( destBase, 'default.'+this.responses.styleLanguage ) ),
+            this.destinationPath( path.join( destBase, this.responses.projectName+'.'+this.responses.styleLanguage ) )
+        );
+
+    },
+
+    scripts: function(){
+
+        var destBase = path.join(
+            this.responses['sourceRoot'],
+            this.responses['sourceScripts']
+        );
+
+        switch ( this.responses.amd ){
+            case 'almond':
+                this.fs.copyTpl(
+                    this.templatePath('source/scripts/config.js'),
+                    this.destinationPath( path.join( destBase, 'config.js') ),
+                    this.responses
+                );
+                this.fs.copy(
+                    this.templatePath('source/scripts/main.js'),
+                    this.destinationPath( path.join( destBase, 'main.js') )
+                );
+                break;
+
+            case 'require':
+                this.fs.copyTpl(
+                    this.templatePath('source/scripts/config.js'),
+                    this.destinationPath( path.join( destBase, 'config.js') ),
+                    this.responses
+                );
+                this.fs.copy(
+                    this.templatePath('source/scripts/main.js'),
+                    this.destinationPath( path.join( destBase, 'main.js') )
+                );
+                break;
+
+            case 'none':
+                this.fs.copy(
+                    this.templatePath('source/scripts/default.js'),
+                    this.destinationPath( path.join( destBase, 'main.js') )
+                );
+                break;
+        }
+
+
+
+    },
+
+    directories: function(){
+        var obj = this.fs.readJSON( this.destinationPath('settings.json') );
+        var dir;
+        for ( dir in obj.settings.build ){
+            this.mkdir( this.destinationPath( obj.settings.build[ dir ] ) );
+        }
+        for ( dir in obj.settings.resource ){
+            this.mkdir( this.destinationPath( obj.settings.resource[ dir ] ) );
+        }
+        for ( dir in obj.settings.source ){
+            this.mkdir( this.destinationPath( obj.settings.source[ dir ] ) );
+        }
+    }
+
+};
+
 module.exports = yeoman.generators.Base.extend({
 
     prompting: function(){
         var done = this.async();
         var self = this;
-        self.responses = {};
-        self.prompt( getTypePrompts( self ), function( typeResponse ){
-            var types = self.fs.readJSON( self.templatePath('types.json') );
-            var type = types[ typeResponse['type'] ];
-            var prompts = [].concat(
-                    (type.prompts || []),
-                    getGeneralPrompts( self ),
-                    getPathPrompts( self ),
-                    getScriptPrompts( self ),
-                    getDependencyPrompts( self )
-                ).filter( function( prompt ){
-                    var include = false;
 
-                    switch (prompt.name){
-                        case 'libs':
-                            //set default libs to value
-                            prompt.default = type.values[ prompt.name ] || [];
-                            include = true;
-                            break;
-                        default:
-                            //only show prompt if not set
-                            include = ( type.values[ prompt.name ] === undefined );
-                            if (!include){
-                                self.responses[ prompt.name ] = type.values[ prompt.name ];
-                            }
-                            break;
-
-                    }
-                    //console.log("include "+prompt.name+": "+include);
-
-                    return include;
-                });
-
-            self.prompt( prompts, function( responses ){
-                //combine responses with preset values
-                self.responses.type = typeResponse.type;
-                _.merge( self.responses, responses );
-
-                switch ( self.responses.amd ){
-                    case 'almond':
-                        self.responses['scripts'] = '<script type="text/javascript" src="'+
-                                                    self.responses.buildScripts+
-                                                    '/main.js"></script>\n';
-                        break;
-
-                    case 'require':
-                        self.responses['scripts'] = '<script type="text/javascript" src="/'+
-                                                    self.responses.vendorPath+'/'+
-                                                    'require.js" data-main="/'+
-                                                    self.responses.buildScripts+'/main"></script>\n';
-                        break;
-
-                    case 'none':
-                        self.responses['scripts'] = '<script type="text/javascript" src="'+
-                                                    self.responses.buildScripts+
-                                                    '/main.js"></script>\n';
-                        break;
-                }
-
-
-                self.sourceRoot( self.templatePath( type.path ) );
-                if ( self.responses['amd'] === 'almond' ){
-                    if ( self.responses.libs.indexOf( 'almond' ) <= 0 ){
-                        self.responses.libs.push('almond');
-                    }
-                }
-
-                done();
-
-            } );
-        });
-
+        if ( !this.options['update-automation'] ) {
+            prompt( self, done );
+        }
+        else {
+            done();
+        }
     },
 
     writing: {
+        all: function(){
+            var writing = write;
+            if ( this.options['update-automation'] ) {
+                writing = _.pick( write, ['automation'] );
+            }
 
-        files: function(){
-            var self = this;
-            var types = self.fs.readJSON( self.templatePath('../types.json') );
-            var type = types[ self.responses['type'] ];
-            //console.log( "Copying files:" );
-            for ( var destination in type.files ){
-                //console.log("---"+destination);
-                if (type.files.hasOwnProperty(destination) ){
-                    var src = type.files[ destination ];
-                    var dest = _.template( destination )( self.responses );
-                    glob.sync( src, { cwd: self.templatePath() } ).forEach( function( file ){
-                        //console.log( "      "+src );
-                        self.fs.copyTpl(
-                            self.templatePath( src ),
-                            self.destinationPath( dest ),
-                            self.responses
-                        );
-                    });
+            for ( var group in writing ){
+                console.log( 'writing: '+group );
+                if ( writing.hasOwnProperty( group ) ){
+                    writing[ group ].call( this );
                 }
-            }
-            //console.log( "   complete." );
-
-
-        },
-
-        automation: function(){
-            this.fs.copy(
-                this.templatePath( '../automation/' ),
-                this.destinationPath( 'automation/' )
-            );
-        },
-
-        bower: function(){
-
-             //update bower file with selected dependencies
-            var bower = this.fs.readJSON( this.destinationPath('bower.json') );
-            var self = this;
-            if  (self.responses['amd'] === 'require' && self.responses['libs'].indexOf('requirejs') < 0 ){
-                self.responses['libs'].push('requirejs');
-            }
-            this.responses['libs'].forEach( function( lib ){
-
-                bower.dependencies[ lib ] = ( self.responses[ lib+'_version' ] !== undefined ) ?
-                                              self.responses[ lib+'_version' ] :
-                                              self.versionMap[ lib ][0];
-
-            });
-            this.fs.writeJSON( this.destinationPath('bower.json'), bower );
-        },
-
-        settings: function(){
-            var self = this;
-            //generate default settings file
-            //add dynamic values
-            var libraries = self.fs.readJSON( self.templatePath('../../data/libraries.json') );
-            var defaults = this.fs.readJSON( this.destinationPath('settings.json') );
-            defaults = _.pick( defaults, 'order','settings' );
-            this.responses['libs'].forEach( function( lib ){
-                var version = ( self.responses[ 'lib_version_'+lib ] !== undefined ) ?
-                    self.responses[ 'lib_version_'+lib ] :
-                    self.versionMap[ lib ][0];
-                var obj = libraries[ lib+'#'+version ] || libraries[ lib ] || {};
-
-                //add shims
-                defaults.settings.dependencies.shim[ lib ] = obj.shim;
-
-                //merge mappings
-                _.merge(
-                    defaults.settings.dependencies.map,
-                    obj.map
-                );
-
-                if ( obj.replace ){
-                    for (var type in obj.replace ){
-                        if ( !defaults.settings.dependencies.replace[ type ] ){
-                            defaults.settings.dependencies.replace[ type ] = {};
-                        }
-                        defaults.settings.dependencies.replace[ type ][ lib ] = obj.replace[ type ];
-                    }
-                }
-
-            });
-
-            //update settings based on amd type
-            switch( this.responses['amd'] ){
-                case 'require':
-                    defaults.settings.scripts.almond = false;
-                    break;
-                case 'almond':
-                    defaults.settings.scripts.require = false;
-                    break;
-                default:
-                    defaults.settings.scripts.copy = [ "**/*.js" ];//copy all scripts by default
-                    defaults.settings.scripts.almond = false;
-                    defaults.settings.scripts.require = false;
-                    break;
-            }
-
-            //update settings based on amd type
-            switch( this.responses['styleLanguage'] ){
-                case 'less':
-                    delete defaults.settings.source.sass;
-                    break;
-                case 'sass':
-                    delete defaults.settings.source.less;
-                    break;
-                default:
-                    break;
-            }
-
-            this.fs.writeJSON( this.destinationPath('settings.json'), defaults );
-
-        },
-
-        styles: function(){
-            var self = this;
-
-            var destBase = path.join(
-                this.responses['sourceRoot'],
-                this.responses['sourceStyles']
-            );
-
-            this.fs.copy(
-                this.templatePath('source/less'),
-                this.destinationPath( path.join( destBase ) )
-            );
-
-            this.fs.move(
-                this.destinationPath( path.join( destBase, 'default.'+self.responses.styleLanguage ) ),
-                this.destinationPath( path.join( destBase, self.responses.projectName+'.'+self.responses.styleLanguage ) )
-            );
-
-        },
-
-        scripts: function(){
-
-            var destBase = path.join(
-                this.responses['sourceRoot'],
-                this.responses['sourceScripts']
-            );
-
-            switch ( this.responses.amd ){
-                case 'almond':
-                    this.fs.copyTpl(
-                        this.templatePath('source/scripts/config.js'),
-                        this.destinationPath( path.join( destBase, 'config.js') ),
-                        this.responses
-                    );
-                    this.fs.copy(
-                        this.templatePath('source/scripts/main.js'),
-                        this.destinationPath( path.join( destBase, 'main.js') )
-                    );
-                    break;
-
-                case 'require':
-                    this.fs.copyTpl(
-                        this.templatePath('source/scripts/config.js'),
-                        this.destinationPath( path.join( destBase, 'config.js') ),
-                        this.responses
-                    );
-                    this.fs.copy(
-                        this.templatePath('source/scripts/main.js'),
-                        this.destinationPath( path.join( destBase, 'main.js') )
-                    );
-                    break;
-
-                case 'none':
-                    this.fs.copy(
-                        this.templatePath('source/scripts/default.js'),
-                        this.destinationPath( path.join( destBase, 'main.js') )
-                    );
-                    break;
-            }
-
-
-
-        },
-
-        directories: function(){
-            var obj = this.fs.readJSON( this.destinationPath('settings.json') );
-            var dir;
-            for ( dir in obj.settings.build ){
-                this.mkdir( this.destinationPath( obj.settings.build[ dir ] ) );
-            }
-            for ( dir in obj.settings.resource ){
-                this.mkdir( this.destinationPath( obj.settings.resource[ dir ] ) );
-            }
-            for ( dir in obj.settings.source ){
-                this.mkdir( this.destinationPath( obj.settings.source[ dir ] ) );
             }
         }
-
-
     },
 
     install: function () {
         var self = this;
         this.installDependencies({
-            skipInstall: this.options['skip-install'],
+            skipInstall: this.options['skip-install'] || this.options['update-automation'],
             callback: function(){
                 console.log('running grunt build');
-                self.spawnCommand( 'grunt', ['build'] )
-                    .on('close',function(){
-                        console.log('grunt build complete');
-                    } );
+                    self.spawnCommand( 'grunt', ['build'] )
+                        .on('close',function(){
+                            console.log('grunt build complete');
+                        } );
             }
         });
     }
