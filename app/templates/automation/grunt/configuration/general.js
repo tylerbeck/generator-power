@@ -40,7 +40,7 @@ module.exports = {
             updateConfigs: [],
             commit: true,
             commitMessage: 'Release v%VERSION%',
-            commitFiles: ['package.json'],
+            commitFiles: ['package.json', 'bower.json'],
             createTag: true,
             tagName: 'v%VERSION%',
             tagMessage: 'Version %VERSION%',
