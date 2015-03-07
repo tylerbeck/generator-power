@@ -26,6 +26,7 @@
     "grunt-mkdir": "^0.1.2",
     "grunt-newer": "^0.8.0",
     "grunt-notify": "^0.4.1",
+    "grunt-remove-logging": "^0.2.0",
     "grunt-sketch": "^1.0.1",
     "grunt-startup": "^0.1.2",
     "grunt-string-replace": "^1.0.0",

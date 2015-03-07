@@ -44,7 +44,7 @@ module.exports = {
             createTag: true,
             tagName: 'v%VERSION%',
             tagMessage: 'Version %VERSION%',
-            push: true,
+            push: false,
             pushTo: 'upstream',
             gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d',
             globalReplace: false,

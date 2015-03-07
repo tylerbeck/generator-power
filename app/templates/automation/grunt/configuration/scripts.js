@@ -59,7 +59,9 @@ module.exports = {
      */
     uglify: {
         options: {
-            compress: settings.scripts.compress,
+            compress: ( settings.scripts.compress ? {
+                drop_console: !settings.scripts.log
+            } : false ),
             preserveComments: settings.scripts.compress ? settings.scripts.comments : 'all'
         },
         copy:{
@@ -79,33 +81,24 @@ module.exports = {
         }
     },
 
-    /**
-     * string-replace
-     */
-    'string-replace': {
-        console_log: {
-          files: [{
-              expand: true,
-              cwd: '<%= settings.build.scripts %>',
-              src: './**/*.js',
-              dest: './'
-          }],
-          options: {
-              replacements: [{
-                  pattern: /console.log(.*);/g,
-                  replacement: ""
-              }]
-          }
-      }
-    },
 
     /**
      * require optimization configuration
      */
     requirejs: {
         options: {
+            wrap: true,
             baseUrl: '<%= settings.source.scripts %>',
-            optimize: settings.scripts.compress ? 'none' : 'uglify2'
+            optimize: settings.scripts.compress ? 'uglify2' : 'none',
+            onBuildRead: function( moduleName, path, contents ) {
+                //return contents;
+                return settings.scripts.log ? contents : contents.replace( /console.log\(.*\);/g, '' );
+            },
+            onBuildWrite: function( moduleName, path, contents ) {
+                // Add extra stufff;
+                return contents;
+            }
+
         },
 
         almond: {
@@ -171,18 +164,6 @@ module.exports = {
             ],
             ifFalse:[
 
-            ]
-        },
-        'scripts-log':{
-            options:{
-                config: {
-                    property: "settings.scripts.log",
-                    value: true
-                }
-            },
-            ifTrue: [],
-            ifFalse:[
-                'string-replace:console_log'
             ]
         },
         'scripts-almond': {

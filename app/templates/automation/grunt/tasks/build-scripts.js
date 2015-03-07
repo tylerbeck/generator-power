@@ -8,7 +8,6 @@ module.exports = function( grunt ) {
         'if:scripts-concat',
         'if:scripts-almond',
         'if:scripts-require',
-        'if:scripts-log',
         'notify:scripts'
     ] );
 };
