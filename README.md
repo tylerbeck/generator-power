@@ -1,4 +1,4 @@
-#generator-front-end
+#generator-power
 ============
 
 ##Overview
