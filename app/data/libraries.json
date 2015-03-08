@@ -2,16 +2,27 @@
     "almond": {},
     "flexslider": {
         "shim":[
+            "flexslider.css",
             "jquery.flexslider.js",
-            "flexslider.less",
-            "fonts/flexslider-icon.eot",
-            "fonts/flexslider-icon.woff",
-            "fonts/flexslider-icon.ttf",
-            "fonts/flexslider-icon.svg"
+            "fonts/*"
         ],
         "map": {
             "fonts":{
-                "flexslider/fonts/": "/"
+                "fonts/": "/"
+            },
+            "less":{
+                "flexslider.css": "flexslider.less"
+            },
+            "sass":{
+                "flexslider.css": "_flexslider.scss"
+            }
+        },
+        "replace": {
+            "less":{
+                "url\\('fonts/": "url('/assets/fonts/vendor/flexslider/"
+            },
+            "sass":{
+                "url\\('fonts/": "url('/assets/fonts/vendor/flexslider/"
             }
         }
     },
@@ -24,19 +35,43 @@
         ],
         "map":{
             "scripts":{
-                "handlebars":"/"
+                "":"/"
             }
         }
     },
+    "html5shiv":{},
     "jquery#2.x":{},
     "jquery#1.x":{},
+    "leaflet#0.x":{
+        "shim":[
+            "dist/leaflet.css",
+            "dist/leaflet.js",
+            "dist/images/*"
+        ],
+        "map": {
+            "less":{
+                "dist/leaflet.css": "leaflet.less"
+            },
+            "sass": {
+                "dist/leaflet.css": "_leaflet.scss"
+            }
+        },
+        "replace":{
+            "less": {
+                "url\\(images/": "url(/assets/images/vendor/leaflet/"
+            },
+            "sass": {
+                "url\\(images/": "url(/assets/images/vendor/leaflet/"
+            }
+        }
+    },
     "normalize-css": {
         "map":{
             "less":{
-                "normalize-css/normalize.css": "normalize.less"
+                "normalize.css": "normalize.less"
             },
             "sass":{
-                "normalize-css/normalize.css": "_normalize.scss"
+                "normalize.css": "_normalize.scss"
             }
         }
     },
@@ -47,8 +82,8 @@
     "requirejs-plugins": {
         "map":{
             "scripts": {
-                "requirejs-plugins/src": "/requirejs-plugins/",
-                "requirejs-plugins/lib": "/requirejs-plugins/"
+                "src": "/requirejs-plugins/",
+                "lib": "/requirejs-plugins/"
             }
         }
     },
@@ -56,7 +91,7 @@
         "shim": "text.js",
         "map":{
             "scripts":{
-                "requirejs-text": "/requirejs-plugins/"
+                "": "/requirejs-plugins/"
             }
         }
     }

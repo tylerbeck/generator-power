@@ -485,13 +485,26 @@ var write = {
                 self.versionMap[ lib ][0];
             var obj = libraries[ lib+'#'+version ] || libraries[ lib ] || {};
 
+            //add library root to mapped values
+            var map = {};
+            if ( obj.map ){
+                for ( var type in obj.map ){
+                    for ( var src in obj.map[ type ] ){
+                        if ( !map[ type ] ){
+                            map[ type ] = {};
+                        }
+                        map[ type ][ path.join( lib, src ) ] = obj.map[ type ][ src ];
+                    }
+                }
+            }
+
             //add shims
             defaults.settings.dependencies.shim[ lib ] = obj.shim;
 
             //merge mappings
             _.merge(
                 defaults.settings.dependencies.map,
-                obj.map
+                map
             );
 
             if ( obj.replace ){

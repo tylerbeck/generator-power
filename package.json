@@ -1,7 +1,7 @@
 {
-  "name": "generator-front-end",
-  "version": "0.1.3",
-  "description": "front-end generator",
+  "name": "generator-power",
+  "version": "0.2.0",
+  "description": "power generator, a multifaceted generator",
   "author": {
     "name": "Tyler Beck",
     "email": "",
