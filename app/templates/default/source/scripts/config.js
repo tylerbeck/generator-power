@@ -5,7 +5,10 @@ requirejs.config( {
     <% if ( amd === "almond" ){ %>
     "insertRequire": ['main'],
     <% } %>
-    "paths": {},
+    "paths": {
+<% _.each( libs, function( name ){ %>
+        "<%= name %>": "vendor/<%= name %>",<% }) %>
+    },
     "waitSeconds": 0,
     "packages": [],
     "map":{},

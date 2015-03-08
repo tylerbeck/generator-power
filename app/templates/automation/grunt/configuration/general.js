@@ -58,6 +58,9 @@ module.exports = {
      * when bower.json or settings file changes clean and re-map vendor files
      */
     watch: {
+        options: {
+            forever: true
+        },
         settings:{
             files: [
                 '*-settings.json',
