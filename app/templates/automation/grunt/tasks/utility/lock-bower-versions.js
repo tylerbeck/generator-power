@@ -9,9 +9,10 @@ module.exports = function( grunt ) {
 
         var bower = grunt.file.readJSON( 'bower.json' );
         for (var pkg in bower.dependencies){
-            if ( bower.dependencies[pkg] && (bower.dependencies[pkg] == "*" || bower.dependencies[pkg] == "latest" )){
-                var dotBower = grunt.file.readJSON( path.join('bower_componentes', pkg, '.bower.json' ) );
-                bower.dependencies[pkg] = dotBower._target;
+            var pkgVersion = bower.dependencies[pkg];
+            if ( bower.dependencies[pkg] ){
+                var dotBower = grunt.file.readJSON( path.join('bower_components', pkg, '.bower.json' ) );
+                bower.dependencies[pkg] = dotBower.version;
             }
         }
 
