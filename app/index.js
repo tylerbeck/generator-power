@@ -78,6 +78,15 @@ function responseIsNot( name, value ){
 }
 
 /**
+ * get responses from concatenated settings.json files
+ * @param self
+ * @returns {{}}
+ */
+function getSettings( self ){
+    var obj = self.fs.readJSON( "settings.json" );
+}
+
+/**
  * passed as argument to when in prompts
  * checks if lib is selected
  * @param name
@@ -335,6 +344,28 @@ function getScriptPrompts( self ){
 
 }
 
+function filterPrompts( prompt, values, self ){
+    var include = false;
+
+    switch ( prompt.name ) {
+        case 'libs':
+            //set default libs to value
+            prompt.default = values[prompt.name] || [];
+            include = true;
+            break;
+        default:
+            //only show prompt if not set
+            include = ( values[prompt.name] === undefined );
+            if ( !include ) {
+                self.responses[prompt.name] = values[prompt.name];
+            }
+            break;
+
+    }
+
+    return include;
+}
+
 
 /**
  * execute prompts
@@ -343,35 +374,14 @@ function prompt( self, done ){
     self.responses = {};
     self.prompt( getTypePrompts( self ), function( typeResponse ) {
         var types = self.fs.readJSON( self.templatePath( 'types.json' ) );
-        var type = types[typeResponse['type']];
+        var type = types[ typeResponse['type'] ];
         var prompts = [].concat(
             (type.prompts || []),
             getGeneralPrompts( self ),
             getPathPrompts( self ),
             getScriptPrompts( self ),
             getDependencyPrompts( self )
-        ).filter( function( prompt ) {
-                var include = false;
-
-                switch ( prompt.name ) {
-                    case 'libs':
-                        //set default libs to value
-                        prompt.default = type.values[prompt.name] || [];
-                        include = true;
-                        break;
-                    default:
-                        //only show prompt if not set
-                        include = ( type.values[prompt.name] === undefined );
-                        if ( !include ) {
-                            self.responses[prompt.name] = type.values[prompt.name];
-                        }
-                        break;
-
-                }
-                //console.log("include "+prompt.name+": "+include);
-
-                return include;
-            } );
+        ).filter( function( prompt ) { return filterPrompts( prompt, type.values, self ); } );
 
         self.prompt( prompts, function( responses ) {
             //combine responses with preset values
@@ -412,6 +422,45 @@ function prompt( self, done ){
         } );
     } );
 }
+
+function promptUpdateLibs( self, done ){
+    var types = self.fs.readJSON( self.templatePath( 'types.json' ) );
+    var obj = self.fs.readJSON( 'settings.json' );
+    var settings = obj.settings;
+    var bower =  self.fs.readJSON( "bower.json" );
+    var type = types[ obj.generatorType ];
+    var defaults = {
+        type: obj.generatorType,
+        sourceRoot: settings.source.root,
+        sourceScripts: settings.source.scripts.replace( settings.source.root+"/","" ),
+        buildScripts: settings.build.scripts.replace( settings.build.root+"/","" ),
+        vendor: settings.dependencies.path,
+        libs: Object.keys( bower.dependencies ),
+        amd: settings.scripts.almond ? 'almond' : settings.scripts.require ? 'require' : 'none'
+    };
+
+    console.log( JSON.stringify( defaults, undefined, "  " ));
+    self.responses = _.merge({},defaults);
+
+    var prompts = getDependencyPrompts( self )
+        .filter( function( prompt ) { return filterPrompts( prompt, defaults, self ); } );
+
+    self.prompt( prompts, function( responses ) {
+
+        _.merge( self.responses, responses );
+        if ( self.responses['amd'] === 'almond' ) {
+            if ( self.responses.libs.indexOf( 'almond' ) <= 0 ) {
+                self.responses.libs.push( 'almond' );
+            }
+        }
+
+        done();
+        
+        self.sourceRoot( self.templatePath( type.path ) );
+
+    } );
+}
+
 
 /**
  * writing methods
@@ -477,7 +526,7 @@ var write = {
         //add dynamic values
         var libraries = this.fs.readJSON( this.templatePath('../../data/libraries.json') );
         var defaults = this.fs.readJSON( this.destinationPath('settings.json') );
-        defaults = _.pick( defaults, 'order','settings' );
+        defaults = _.pick( defaults, 'order', 'generatorType','settings' );
         var self = this;
         this.responses['libs'].forEach( function( lib ){
             var version = ( self.responses[ 'lib_version_'+lib ] !== undefined ) ?
@@ -634,11 +683,14 @@ module.exports = yeoman.generators.Base.extend({
         var done = this.async();
         var self = this;
 
-        if ( !this.options['update-automation'] ) {
-            prompt( self, done );
+        if ( this.options['update-automation'] ) {
+            done();
+        }
+        else if ( this.options['update-libs'] ){
+            promptUpdateLibs( self, done );
         }
         else {
-            done();
+            prompt( self, done );
         }
     },
 
@@ -647,6 +699,18 @@ module.exports = yeoman.generators.Base.extend({
             var writing = write;
             if ( this.options['update-automation'] ) {
                 writing = _.pick( write, ['automation'] );
+            }
+            else if ( this.options['update-libs'] ){
+                var destBase = path.join(
+                    this.responses['sourceRoot'],
+                    this.responses['sourceScripts']
+                );
+                writing = _.pick( write, ['bower', 'settings'] );
+                this.fs.copyTpl(
+                    this.templatePath('source/scripts/config.js'),
+                    this.destinationPath( path.join( destBase, 'config.updated.js') ),
+                    this.responses
+                );
             }
 
             for ( var group in writing ){
@@ -660,6 +724,11 @@ module.exports = yeoman.generators.Base.extend({
 
     install: function () {
         var self = this;
+
+
+
+
+
         this.installDependencies({
             skipInstall: this.options['skip-install'] || this.options['update-automation'],
             callback: function(){

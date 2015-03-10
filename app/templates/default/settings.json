@@ -1,5 +1,6 @@
 {
     "order": -999,
+    "generatorType": "<%= type %>",
     "settings": {
         "build": {
             "root": "<%= buildRoot %>",
