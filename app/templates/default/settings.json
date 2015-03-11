@@ -80,7 +80,7 @@
             "comments": "some",
             "compress": true,
             "copy": [],
-            "concat": [],
+            "concat": {},
             "require": {
                 "config": "config.js",
                 "modules": [

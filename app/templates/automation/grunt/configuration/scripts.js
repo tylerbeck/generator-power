@@ -6,6 +6,7 @@
 
 var settings = require( '../settings' );
 var path = require( 'path' );
+var grunt = require( 'grunt' );
 
 function expand( src, dest, map ){
     var obj = {};
@@ -14,8 +15,9 @@ function expand( src, dest, map ){
         var d = path.join(dest, target);
         obj[ d ] = [];
         parts.forEach( function( part ){
-           obj[ d].push( path.join( dest, part ) );
+            obj[ d ] = obj[ d ].concat( grunt.file.expand( path.join( src, part ) ) );
         });
+
     }
 
     return obj;
@@ -28,6 +30,9 @@ function hasFilesTest( obj ){
             if ( obj.length > 0 ){
                 return true;
             }
+        }
+        else{
+            return Object.keys( obj ).length;
         }
         return false;
     };
@@ -74,8 +79,8 @@ module.exports = {
         },
         concat: {
             files: expand(
-                settings.build.scripts,
                 settings.source.scripts,
+                settings.build.scripts,
                 settings.scripts.concat
             )
         }

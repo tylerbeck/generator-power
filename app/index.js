@@ -455,7 +455,7 @@ function promptUpdateLibs( self, done ){
         }
 
         done();
-        
+
         self.sourceRoot( self.templatePath( type.path ) );
 
     } );

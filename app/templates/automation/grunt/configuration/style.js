@@ -25,6 +25,20 @@ function getMapping( src, srcExt, dest, destExt ){
     return obj;
 }
 
+function getDirectoryMapping( base, list, ext ){
+    var obj = {};
+    list.forEach( function( item ){
+        var file = path.join( base, item+"."+ext );
+        var dir = path.dirname( file )+ path.sep;
+        var name = path.basename( file );
+        if ( !obj[ dir ]){
+            obj[ dir ] = [];
+        }
+        obj[ dir].push( file );
+    });
+    return obj;
+}
+
 function getGlob( base, list, ext ){
     return path.join( base , "{" + list.join("|") +"}." + ext );
 }
@@ -98,9 +112,7 @@ module.exports = {
             log: false
         },
         main: {
-            files: {
-                '<%= settings.build.styles %>': getList( settings.build.styles, settings.style.files, 'css' )
-            }
+            files: getDirectoryMapping( settings.build.styles, settings.style.files, 'css' )
         }
     },
 
