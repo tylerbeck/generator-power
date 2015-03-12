@@ -1,5 +1,29 @@
 {
     "almond": {},
+    "bootstrap#3.x":{
+        "shim":[
+            "less/bootstrap.less",
+            "dist/css/bootstrap.css",
+            "dist/js/bootstrap.js",
+            "dist/fonts/glyphicons-halflings-regular.eot",
+            "dist/fonts/glyphicons-halflings-regular.svg",
+            "dist/fonts/glyphicons-halflings-regular.ttf",
+            "dist/fonts/glyphicons-halflings-regular.woff"
+        ],
+        "map": {
+            "fonts":{
+                "dist/fonts/": "/"
+            },
+            "less":{
+                "flexslider.css": "flexslider.less"
+            },
+            "sass":{
+                "flexslider.css": "_flexslider.scss"
+            }
+        },
+
+    },
+
     "flexslider": {
         "shim":[
             "flexslider.css",

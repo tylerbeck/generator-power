@@ -32,7 +32,8 @@ function validatePattern( required, regex, err ){
  * @returns {String}
  */
 function trimSlashes( value ){
-    return value.replace(/^[\/]*/,'' ).replace(/[\/]*$/,'');
+    var str = value.replace(/^[\/]*/,'' ).replace(/[\/]*$/,'');
+    return str === "" ? "." : str;
 }
 
 /**
@@ -412,7 +413,7 @@ function prompt( self, done ){
 
             self.sourceRoot( self.templatePath( type.path ) );
             if ( self.responses['amd'] === 'almond' ) {
-                if ( self.responses.libs.indexOf( 'almond' ) <= 0 ) {
+                if ( self.responses.libs.indexOf( 'almond' ) < 0 ) {
                     self.responses.libs.push( 'almond' );
                 }
             }

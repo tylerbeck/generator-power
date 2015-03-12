@@ -51,8 +51,7 @@
             "<%= buildRoot %>/index.html":"public/index.html"
         },
         "values": {
-            "libs": [
-            ]
+            "libs": []
         },
         "prompts": []
     }

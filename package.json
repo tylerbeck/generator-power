@@ -1,6 +1,6 @@
 {
   "name": "generator-power",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "power generator, a multifaceted generator",
   "author": {
     "name": "Tyler Beck",
@@ -27,6 +27,7 @@
     "yosay": "^0.3.0"
   },
   "devDependencies": {
+    "grunt-bump": "^0.3.0",
     "mocha": "*"
   },
   "peerDependencies": {
