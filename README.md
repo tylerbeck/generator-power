@@ -25,12 +25,12 @@ This project is intended to be forked and customized.  Once forked, additional t
 
 First install yo (requires node): `npm install -g yo`  
 
-If you want to use the generator as is, just install it: `npm install -g generator-front-end`
+If you want to use the generator as is, just install it: `npm install -g generator-power`
 
 If you'd like to modify and customize template types and installation options, 
-<a href="https://github.com/tylerbeck/generator-front-end/fork">Fork this repository</a> then from a cloned folder run npm link to make it available for development and local use.
+<a href="https://github.com/tylerbeck/generator-power/fork">Fork this repository</a> then from a cloned folder run npm link to make it available for development and local use.
 
-To run the generator, `cd` to an empty/uninitialized project directory and run `yo front-end`.
+To run the generator, `cd` to an empty/uninitialized project directory and run `yo power`.
 A series of prompts will allow you to select and customize the installation.
 
  
