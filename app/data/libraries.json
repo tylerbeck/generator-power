@@ -15,12 +15,13 @@
                 "dist/fonts/": "/"
             },
             "less":{
-                "flexslider.css": "flexslider.less"
+                "dist/css/bootstrap.css": false
             },
             "sass":{
-                "flexslider.css": "_flexslider.scss"
+                "less/bootstrap.less": "false",
+                "dist/css/bootstrap.css": "_bootstrap.scss"
             }
-        },
+        }
 
     },
 
@@ -65,7 +66,11 @@
     },
     "html5shiv":{},
     "jquery#2.x":{},
-    "jquery#1.x":{},
+    "jquery#1.x":{
+        "shim": [
+            "jquery.js"
+        ]
+    },
     "leaflet#0.x":{
         "shim":[
             "dist/leaflet.css",
