@@ -14,10 +14,10 @@ module.exports = new GruntStartup( {
         'grunt-sketch'
     ],
     taskPaths: [
-        'automation/grunt/tasks/',
-        'automation/grunt/tasks/utility/'
+        'tools/grunt/tasks/',
+        'tools/grunt/tasks/utility/'
     ],
     configPaths: [
-        'automation/grunt/configuration/'
+        'tools/grunt/configuration/'
     ]
 } );

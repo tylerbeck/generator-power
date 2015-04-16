@@ -51,7 +51,7 @@ module.exports = {
         all: [
             //'gruntfile.js',
             '<%= settings.source.scripts %>/**/*.js',
-            //'automation/grunt/**/*.js',
+            //'tools/grunt/**/*.js',
             '!**/vendor/**/*.js' //don't jshint vendor scripts
         ],
         options: {

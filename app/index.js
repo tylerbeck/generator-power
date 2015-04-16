@@ -490,15 +490,15 @@ var write = {
         }
     },
 
-    automation: function(){
+    tools: function(){
         //use glob to avoid overwrite errors on directories
-        var templateBase = this.templatePath( this.options['update-automation'] ? 'automation' : '../automation/' );
+        var templateBase = this.templatePath( this.options['update-tools'] ? 'tools' : '../tools/' );
         var self = this;
         glob.sync( '**/*', { cwd: templateBase, nodir: true } ).forEach( function( file ){
-            console.log( "      ../automation/"+file );
+            console.log( "      ../tools/"+file );
             self.fs.copy(
                 path.join( templateBase, file ),
-                path.join( self.destinationPath( 'automation' ), file )
+                path.join( self.destinationPath( 'tools' ), file )
             );
         });
 
@@ -684,7 +684,7 @@ module.exports = yeoman.generators.Base.extend({
         var done = this.async();
         var self = this;
 
-        if ( this.options['update-automation'] ) {
+        if ( this.options['update-tools'] ) {
             done();
         }
         else if ( this.options['update-libs'] ){
@@ -698,8 +698,8 @@ module.exports = yeoman.generators.Base.extend({
     writing: {
         all: function(){
             var writing = write;
-            if ( this.options['update-automation'] ) {
-                writing = _.pick( write, ['automation'] );
+            if ( this.options['update-tools'] ) {
+                writing = _.pick( write, ['tools'] );
             }
             else if ( this.options['update-libs'] ){
                 var destBase = path.join(
@@ -731,7 +731,7 @@ module.exports = yeoman.generators.Base.extend({
 
 
         this.installDependencies({
-            skipInstall: this.options['skip-install'] || this.options['update-automation'],
+            skipInstall: this.options['skip-install'] || this.options['update-tools'],
             callback: function(){
                 console.log('running grunt build');
                     self.spawnCommand( 'grunt', ['build'] )
@@ -743,3 +743,18 @@ module.exports = yeoman.generators.Base.extend({
     }
 
 });
+
+function test(){
+    var t = {};
+    for ( var obj in t ) {
+
+    }
+
+    var t2 = t;
+
+    console.log( t );
+    console.log( t );
+
+    return t;
+
+}

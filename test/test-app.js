@@ -23,7 +23,7 @@ describe('test:app', function () {
 
     it('creates files', function () {
         assert.file([
-            'automation/',
+            'tools/',
             'README.md',
             'Gruntfile.js',
             'bower.json',
