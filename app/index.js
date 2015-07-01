@@ -733,10 +733,10 @@ module.exports = yeoman.generators.Base.extend({
         this.installDependencies({
             skipInstall: this.options['skip-install'] || this.options['update-tools'],
             callback: function(){
-                console.log('running grunt build');
-                    self.spawnCommand( 'grunt', ['build'] )
+                console.log('running grunt setup');
+                    self.spawnCommand( 'grunt', ['setup'] )
                         .on('close',function(){
-                            console.log('grunt build complete');
+                            console.log('grunt setup complete');
                         } );
             }
         });

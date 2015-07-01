@@ -11,7 +11,8 @@ var path = require('path');
 var grunt = require('grunt');
 
 //imagemin plugins
-var zopfli = require('imagemin-zopfli');
+//zopfli offers better compression, but sometimes can hang
+//var zopfli = require('imagemin-zopfli');
 var mozjpeg = require('imagemin-mozjpeg');
 
 
@@ -54,7 +55,7 @@ function getManagedImages(){
 function hasSketchFiles(){
     var list = grunt.file.expand( path.join( settings.resource.sketch, '**/*.sketch' ) );
     //grunt.log.writeln( list );
-    return list.length > 0;
+    return settings.images.sketch && list.length > 0;
 
 }
 
@@ -88,7 +89,7 @@ module.exports = {
                     { removeUselessStrokeAndFill: false }
                 ],
                 use: [
-                    zopfli({ more: true }),
+                    //zopfli({ more: true }),
                     mozjpeg({quality: '65-85'})
                 ]
             },

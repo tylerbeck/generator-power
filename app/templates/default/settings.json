@@ -2,6 +2,23 @@
     "order": -999,
     "generatorType": "<%= type %>",
     "settings": {
+
+        "style": {
+            "language": "<%= styleLanguage %>",
+            "optimize": true,
+            "sourceMap": false,
+            "browsers": [
+                "ie > 7",
+                "Firefox > 3.5",
+                "chrome > 9",
+                "safari > 5"
+            ],
+            "files": [
+                "<%= projectName %>"
+            ]
+        },
+
+
         "build": {
             "root": "<%= buildRoot %>",
             "scripts": "<%= buildRoot %>/<%= buildScripts %>",
@@ -24,47 +41,8 @@
             "styles": "<%= sourceRoot %>/<%= sourceStyles %>"
         },
 
-        "dependencies": {
-            "path": "<%= vendor %>",
-            "shim": {},
-            "map": {
-                "less": {},
-                "sass": {},
-                "fonts": {},
-                "scripts": {},
-                "images": {}
-            },
-            "extensions": {
-                "scripts": ["js"],
-                "less": ["less", "css"],
-                "sass": ["sass", "css"],
-                "fonts": ["woff", "eot", "ttf", "svg"],
-                "images": ["png", "jpg", "svg", "gif"]
-            },
-            "replace": {
-                "scripts": {},
-                "less": {},
-                "sass": {},
-                "images": {}
-            }
-        },
-
-        "style": {
-            "language": "<%= styleLanguage %>",
-            "combine-media-queries": true,
-            "optimize": true,
-            "browsers": [
-                "ie > 7",
-                "Firefox > 3.5",
-                "chrome > 9",
-                "safari > 5"
-            ],
-            "files": [
-                "<%= projectName %>"
-            ]
-        },
-
         "images": {
+            "sketch": false,
             "types": "png,jpg,jpeg,gif,svg,ico"
         },
 
@@ -93,7 +71,33 @@
                 "out": "main.js"
             }
 
+        },
+
+        "dependencies": {
+            "path": "<%= vendor %>",
+            "shim": {},
+            "map": {
+                "less": {},
+                "sass": {},
+                "fonts": {},
+                "scripts": {},
+                "images": {}
+            },
+            "extensions": {
+                "scripts": ["js"],
+                "less": ["less", "css"],
+                "sass": ["sass", "css"],
+                "fonts": ["woff", "eot", "ttf", "svg"],
+                "images": ["png", "jpg", "svg", "gif"]
+            },
+            "replace": {
+                "scripts": {},
+                "less": {},
+                "sass": {},
+                "images": {}
+            }
         }
+
 
     }
 }

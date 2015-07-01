@@ -5,6 +5,10 @@ module.exports = function( grunt ) {
     grunt.registerTask( 'setup', [
         'mkdir',
         'bower-install-simple',
-        'if:bower-map'
+        'if:bower-map',
+        'build-images',
+        'build-fonts',
+        'build-style',
+        'build-scripts'
     ] );
 };

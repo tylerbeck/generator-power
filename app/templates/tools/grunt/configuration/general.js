@@ -22,7 +22,7 @@ module.exports = {
            options: {
                create: [
                    '<%= settings.source.scripts %>',
-                   '<%= settings.source.'+settings.style.language+' %>',
+                   '<%= settings.source.styles %>',
                    '<%= settings.source.scripts %>',
                    '<%= settings.source.scripts %>',
                    '<%= settings.resource.fonts %>',

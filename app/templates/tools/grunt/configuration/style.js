@@ -9,6 +9,9 @@
 var settings = require('../settings.js');
 var path = require('path');
 
+//default value for source maps
+var sourceMaps = (settings.style.sourceMap === true);
+
 /**
  * get mapping for css files named in settings
  * @param src
@@ -25,43 +28,40 @@ function getMapping( src, srcExt, dest, destExt ){
     return obj;
 }
 
-function getDirectoryMapping( base, list, ext ){
-    var obj = {};
-    list.forEach( function( item ){
-        var file = path.join( base, item+"."+ext );
-        var dir = path.dirname( file )+ path.sep;
-        var name = path.basename( file );
-        if ( !obj[ dir ]){
-            obj[ dir ] = [];
-        }
-        obj[ dir].push( file );
-    });
-    return obj;
-}
-
-function getGlob( base, list, ext ){
-    return path.join( base , "{" + list.join("|") +"}." + ext );
-}
-
+/**
+ * get list of files based on base path, list and extension
+ * @param base
+ * @param list
+ * @param ext
+ * @returns {Array}
+ */
 function getList( base, list, ext ){
     var all = [];
     list.forEach( function( item ){
         all.push( path.join( base, item+"."+ext ) );
     });
-    return all
+    return all;
 }
 
-var autoprefixer = {
-    options: {
-        expand: true,
+/**
+ * CSS POST PROCESSOR LIST
+ * @type {Array}
+ */
+var cssProcessors = [];
+//autoprefixer
+if ( !(settings.style.autoprefix === false) ){
+    var autoprefixer = require('autoprefixer-core');
+    cssProcessors.push( autoprefixer({
         browsers: settings.style.browsers
-    }
-};
-
-settings.style.files.forEach( function( file ){
-    autoprefixer[ file ] = {src: path.join( settings.build.styles , file+'.css' ) };
-});
-
+    }) );
+}
+//csswring
+if ( !(settings.style.optimize === false) ){
+    var wring = require('csswring');
+    cssProcessors.push( wring({
+        //add wring configuration here
+    }) );
+}
 
 /**
  * configuration
@@ -75,9 +75,14 @@ module.exports = {
     less: {
         default:{
             options: {
-                yuicompress: false,
+                compress: false,
                 strictImports: true,
-                dumpLineNumbers: true
+                dumpLineNumbers: true,
+                sourceMap: sourceMaps,
+                sourceMapFileInline: true,
+                sourceMapBasepath: "<%= settings.source.styles %>/",
+                outputSourceFiles: true,
+                paths: ['./']
             },
             files: getMapping(
                 settings.source.styles, 'less',
@@ -95,40 +100,17 @@ module.exports = {
 
     },
 
-    /**
-     * auto prefixer configuration
-     * automatically adds prefixes based on the specified browsers
-     * additional information can be found at: https://github.com/ai/autoprefixer#browsers
-     */
-    autoprefixer: autoprefixer,
 
-    /**
-     * configuration for the combine-media-queries task
-     * media queries are combined and placed at the bottom of the css file
-     * using a mobile first sorting methodology
-     */
-    cmq: {
+    postcss: {
         options: {
-            log: false
+            map: sourceMaps,
+            processors: cssProcessors
         },
         main: {
-            files: getDirectoryMapping( settings.build.styles, settings.style.files, 'css' )
+            src: getList( settings.build.styles, settings.style.files, 'css' )
         }
     },
 
-
-    /**
-     * css minification configuration
-     * compresses listed css files in place
-     */
-    cssmin: {
-        default: {
-            files: getMapping(
-                settings.build.styles, 'css',
-                settings.build.styles, 'css'
-            )
-        }
-    },
 
     /**
      * removes copied dependencies
@@ -141,10 +123,10 @@ module.exports = {
     },
 
     /**
-     * conditionally run mapping tasks based on styleLang setting
+     * conditionally run tasks based on style settings
      */
     if: {
-        'style-compile': {
+        'less-or-sass': {
             options:{
                 config:{
                     property: "settings.style.language",
@@ -161,30 +143,6 @@ module.exports = {
                 'generate-vendor-less',
                 'less'
             ]
-        },
-        'style-cmq':{
-            options:{
-                config:{
-                    property: "settings.style.combine-media-queries",
-                    value: true
-                }
-            },
-            ifTrue: [
-                'cmq'
-            ],
-            ifFalse: []
-        },
-        'style-optimize':{
-            options:{
-                config:{
-                    property: "settings.style.optimize",
-                    value: true
-                }
-            },
-            ifTrue: [
-                'cssmin'
-            ],
-            ifFalse: []
         }
     },
 
